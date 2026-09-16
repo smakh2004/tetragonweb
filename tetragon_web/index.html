@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon</title>
+
+  <!-- Favicon (your logo.png) -->
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Full-page background animation -->
+  <canvas id="mrSquare" class="rive-bg"></canvas>
+
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+    <a class="download-app" href="https://play.google.com/store/apps/details?id=com.tetragon.app" target="_blank" rel="noopener noreferrer">Download App</a>
+  </header>
+
+  <!-- ===== Center hero ===== -->
+  <main class="hero">
+    <div class="stage">
+      <div class="labels-left">
+        <span class="label-math">math</span>
+        <span class="label-physics">physics</span>
+      </div>
+      <span class="label-always">always learn</span>
+
+      <!-- Navigable link. Change href="#" to your page later,
+           e.g. href="mini-games.html" -->
+      <a class="label-mini" href="#">Mini Games</a>
+
+      <h1 class="science">SCIENCE</h1>
+    </div>
+  </main>
+
+  <!-- ===== Language selector ===== -->
+  <footer class="langbar">
+    <span class="lang"><span class="bar">|</span> EN</span>
+  </footer>
+
+  <!-- 1) Rive runtime (loads BEFORE our code) -->
+  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
+  <!-- 2) Our code -->
+  <script src="js/script.js"></script>
+</body>
+</html>
