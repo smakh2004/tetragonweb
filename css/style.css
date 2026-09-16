@@ -1,0 +1,170 @@
+/* ===== Colors (all in one place) ===== */
+:root {
+  --bg: #f4f6f8;
+  --cyan: #29c1f0;        /* SCIENCE + "math" + logo blue */
+  --indigo: #3b4fd6;      /* "physics" */
+  --indigo-soft: #5566dd; /* "always learn" + "Mini Games" */
+  --violet: #6c46f0;      /* "Download App" */
+  --pink: #ff2e9a;        /* the "|" before EN */
+  --ink: #2a2f3a;         /* "EN" text */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== Full-page animation =====
+   BEHIND (z-index 1): SCIENCE, math, physics, always learn
+   ANIMATION (z-index 2)
+   ON TOP (z-index 3): logo, Download App, Mini Games, EN            */
+.rive-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  display: block;
+}
+
+/* ===== Top bar (responsive) ===== */
+.topbar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(18px, 3vw, 34px) clamp(22px, 4vw, 48px);
+}
+.logo {
+  height: clamp(22px, 2.2vw, 30px);
+  width: auto;
+  display: block;
+}
+.download-app {
+  font-size: clamp(15px, 1.4vw, 20px);
+  font-weight: 700;
+  color: var(--violet);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.download-app:hover {
+  opacity: 0.8;
+}
+
+/* ===== Hero (center area) ===== */
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  min-height: calc(100vh - 200px);
+}
+
+/* Middle content. Main size dials: .science font-size + .stage max-width */
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 1350px;         /* was 1500px */
+  aspect-ratio: 1000 / 560;
+}
+
+/* Big word - BEHIND the animation.
+   DIAL: 19vw scales with the window, 400px caps it on wide screens. */
+.science {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  font-size: clamp(60px, 19vw, 400px);   /* was clamp(72px, 22vw, 560px) */
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--cyan);
+  white-space: nowrap;
+}
+
+/* ===== Labels ===== */
+
+/* math + physics - BEHIND the animation (z-index 1) */
+.labels-left {
+  position: absolute;
+  top: 16%;
+  left: 16%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+.label-math {
+  font-size: clamp(24px, 3vw, 48px);     /* was clamp(26px, 3.4vw, 56px) */
+  font-weight: 700;
+  color: var(--cyan);
+}
+.label-physics {
+  font-size: clamp(24px, 3vw, 48px);     /* was clamp(26px, 3.4vw, 56px) */
+  font-weight: 700;
+  color: var(--indigo);
+}
+
+/* always learn - BEHIND the animation (z-index 1) */
+.label-always {
+  position: absolute;
+  top: 3%;
+  right: 27%;
+  z-index: 1;
+  font-size: clamp(17px, 2vw, 32px);     /* was clamp(18px, 2.3vw, 36px) */
+  font-weight: 500;
+  color: var(--indigo-soft);
+}
+
+/* Mini Games - stays ON TOP (z-index 3), it's the clickable link */
+.label-mini {
+  position: absolute;
+  bottom: 11%;
+  right: 8%;
+  z-index: 3;
+  font-size: clamp(24px, 2.8vw, 44px);   /* was clamp(26px, 3vw, 50px) */
+  font-weight: 600;
+  color: var(--indigo-soft);
+  text-decoration: none;
+  cursor: pointer;
+}
+.label-mini:hover {
+  opacity: 0.8;
+}
+
+/* ===== Language selector (bottom-left) ===== */
+.langbar {
+  position: absolute;
+  bottom: clamp(20px, 3vw, 34px);
+  left: clamp(22px, 4vw, 48px);
+  z-index: 3;
+}
+.lang {
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+}
+.lang .bar {
+  color: var(--pink);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* ===== Short screens ===== */
+@media (max-height: 640px) {
+  .hero { min-height: calc(100vh - 140px); }
+}
