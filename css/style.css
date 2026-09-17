@@ -152,16 +152,70 @@ body {
   left: clamp(22px, 4vw, 48px);
   z-index: 3;
 }
-.lang {
-  font-size: clamp(16px, 1.6vw, 22px);
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: 0.08em;
+
+/* row holding: |  CURRENT  [options ->] */
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.lang .bar {
+.lang-switch .bar {
   color: var(--pink);
   font-weight: 700;
-  margin-right: 6px;
+  font-size: clamp(16px, 1.6vw, 22px);
+}
+
+/* shared look for every language word (current + options) */
+.lang-current,
+.lang-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  transition: opacity 0.15s ease;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* the always-visible current language */
+.lang-current {
+  font-weight: 700;
+}
+.lang-current:hover {
+  opacity: 0.75;
+}
+
+/* the two OTHER languages: in a ROW to the RIGHT, hidden until open */
+.lang-options {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+
+  /* closed state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+
+/* open state (added by JS) */
+.lang-switch.open .lang-options {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.lang-btn {
+  opacity: 0.55;
+}
+.lang-btn:hover {
+  opacity: 1;
 }
 
 /* ===== Short screens ===== */
