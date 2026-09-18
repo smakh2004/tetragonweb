@@ -632,3 +632,11 @@ body {
   }
   .center { order: -1; }            /* timer + avatars on top */
 }
+
+/* Prevent selection, zooming, and context menus during multi-touch play */
+.team-panel, .key, .check-btn {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
