@@ -303,7 +303,10 @@ function buildPad(team) {
 
     if (k === "back") {
       btn.classList.add("back");
-      btn.textContent = "⌫";
+      const icon = document.createElement("img");
+      icon.src = "assets/backspace.png";   // put your file at this path
+      icon.alt = "Backspace";
+      btn.appendChild(icon);
       btn.addEventListener("click", () => pressBack(team));
     } else if (k === "minus") {
       btn.classList.add("op");

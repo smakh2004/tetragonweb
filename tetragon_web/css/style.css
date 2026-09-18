@@ -299,7 +299,7 @@ body {
   background: transparent;
   cursor: pointer;
   font-family: inherit;
-  font-weight: 800;
+  font-weight: 600;
   font-size: clamp(14px, 1.3vw, 17px);
   letter-spacing: 0.04em;
   color: #9aa3ad;
@@ -367,7 +367,7 @@ body {
 /* team header — pill outline, like the image */
 .team-head {
   text-align: center;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.05em;
   padding: 14px;
   border-radius: 999px;
@@ -447,13 +447,22 @@ body {
 .key:hover { background: #f5f7f9; }
 .key:active { transform: translateY(1px); }
 
-/* backspace — soft gray fill, WITH stroke */
+/* backspace — soft gray fill, WITH stroke, icon image instead of text */
 .key.back {
   background: #eef1f4;
   border-color: #e2e7ec;
   color: #8b94a0;
+  padding: 0;                 /* let the icon center itself */
 }
 .key.back:hover { background: #e6eaee; }
+
+.key.back img {
+  width: 32px;                /* icon size — raise/lower to taste */
+  height: 32px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;       /* clicks still hit the button, not the image */
+}
 
 /* minus — solid blue pill, WITH stroke */
 .key.op {
@@ -506,9 +515,9 @@ body {
 }
 .clock { width: 34px; height: 34px; display: block; }
 .timer-text {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--team1);
-  font-size: clamp(22px, 2.2vw, 32px);
+  font-size: clamp(22px, 2.2vw, 26px);
 }
 
 .center-teams {
