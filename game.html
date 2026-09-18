@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon — Battle</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="game-page">
+
+  <!-- ===== Countdown overlay (3 - 2 - 1 - GO!) ===== -->
+  <div class="countdown" id="countdown">
+    <span class="countdown-text" id="countdownText">3</span>
+  </div>
+
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <a href="index.html" class="logo-home">
+      <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+    </a>
+    <span class="mini-title" data-i18n="mini">Mini Games</span>
+    <a class="download-app download-app--pink"
+       href="https://play.google.com/store/apps/details?id=com.tetragon.app"
+       target="_blank" rel="noopener noreferrer"
+       data-i18n="download">Download App</a>
+  </header>
+
+  <!-- ===== Game ===== -->
+  <main class="game-wrap">
+
+    <!-- ===== TEAM 1 (left) ===== -->
+    <section class="team-panel team1">
+      <div class="team-head" data-i18n="team1">1 TEAM</div>
+
+      <div class="equation">
+        <span class="eq-text" id="eqText1">…</span>
+        <span class="eq-box" id="eqBox1"></span>
+      </div>
+
+      <div class="display" id="display1"></div>
+
+      <div class="pad" id="pad1"></div>
+
+      <button class="check-btn" id="check1" type="button" data-i18n="check">CHECK</button>
+    </section>
+
+    <!-- ===== CENTER ===== -->
+    <div class="center">
+      <div class="timer">
+        <canvas id="clock" class="clock"></canvas>
+        <span class="timer-text" id="timerText">3:00</span>
+      </div>
+
+      <div class="center-teams">
+        <div class="team-visual">
+          <canvas id="stars1" class="stars"></canvas>
+          <div class="score score-1" id="score1">0</div>
+          <canvas id="avatar1" class="game-avatar"></canvas>
+        </div>
+        <div class="team-visual">
+          <canvas id="stars2" class="stars"></canvas>
+          <div class="score score-2" id="score2">0</div>
+          <canvas id="avatar2" class="game-avatar"></canvas>
+        </div>
+      </div>
+
+      <!-- Result flows here, UNDER the avatars (no overlap) -->
+      <div class="game-result" id="result" hidden>
+        <div class="result-title" id="resultTitle">1 TEAM WINS</div>
+        <button class="restart-btn" id="resultBtn" type="button" aria-label="Restart">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none"
+               stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <polyline points="21 3 21 9 15 9" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== TEAM 2 (right) ===== -->
+    <section class="team-panel team2">
+      <div class="team-head" data-i18n="team2">2 TEAM</div>
+
+      <div class="equation">
+        <span class="eq-text" id="eqText2">…</span>
+        <span class="eq-box" id="eqBox2"></span>
+      </div>
+
+      <div class="display" id="display2"></div>
+
+      <div class="pad" id="pad2"></div>
+
+      <button class="check-btn" id="check2" type="button" data-i18n="check">CHECK</button>
+    </section>
+  </main>
+
+  <!-- ===== Language selector ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- 1) Rive runtime -->
+  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
+  <!-- 2) shared language system -->
+  <script src="js/i18n.js"></script>
+  <!-- 3) sound effects -->
+  <script src="js/sound.js"></script>
+  <!-- 4) game logic -->
+  <script src="js/game.js"></script>
+</body>
+</html>
