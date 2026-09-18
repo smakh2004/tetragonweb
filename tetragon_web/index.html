@@ -40,31 +40,27 @@
       </div>
       <span class="label-always" data-i18n="always">always learn</span>
 
-      <!-- Navigable link. Change href="#" to your page later,
-           e.g. href="mini-games.html" -->
-      <a class="label-mini" href="#" data-i18n="mini">Mini Games</a>
+      <!-- Opens the Mini Games page -->
+      <a class="label-mini" href="mini-games.html" data-i18n="mini">Mini Games</a>
 
       <h1 class="science" data-i18n="science">SCIENCE</h1>
     </div>
   </main>
 
-  <!-- ===== Language selector (collapsed by default) =====
-       Order: |  CURRENT  [ other two open to the right ]           -->
+  <!-- ===== Language selector (collapsed by default) ===== -->
   <footer class="langbar">
     <div class="lang-switch" id="langSwitch">
       <span class="bar">|</span>
-
-      <!-- the currently selected language (always visible, click to open) -->
       <button class="lang-current" id="langCurrent" type="button">EN</button>
-
-      <!-- the two OTHER languages appear here, in a row to the right -->
       <div class="lang-options" id="langOptions"></div>
     </div>
   </footer>
 
-  <!-- 1) Rive runtime (loads BEFORE our code) -->
+  <!-- 1) Rive runtime -->
   <script src="https://unpkg.com/@rive-app/canvas@2"></script>
-  <!-- 2) Our code -->
+  <!-- 2) shared language system -->
+  <script src="js/i18n.js"></script>
+  <!-- 3) this page's animation -->
   <script src="js/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon — Mini Games</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="mini-page">
+  <!-- ===== Top bar: logo (home) | title | download ===== -->
+  <header class="topbar">
+    <a href="index.html" class="logo-home">
+      <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+    </a>
+
+    <span class="mini-title" data-i18n="mini">Mini Games</span>
+
+    <a class="download-app download-app--pink"
+       href="https://play.google.com/store/apps/details?id=com.tetragon.app"
+       target="_blank" rel="noopener noreferrer"
+       data-i18n="download">Download App</a>
+  </header>
+
+  <!-- ===== Center content ===== -->
+  <main class="mini-main">
+
+    <!-- ONE container: avatar in the back, toggle on top of it -->
+    <div class="game-box">
+      <!-- avatar sits BEHIND, filling the box -->
+      <canvas id="avatar" class="avatar"></canvas>
+
+      <!-- toggle floats ON TOP, near the top of the box -->
+      <div class="difficulty" role="group" aria-label="Difficulty">
+        <button class="diff-btn active" data-diff="easy"   type="button" data-i18n="easy">EASY</button>
+        <button class="diff-btn"        data-diff="medium" type="button" data-i18n="medium">MEDIUM</button>
+        <button class="diff-btn"        data-diff="hard"   type="button" data-i18n="hard">HARD</button>
+      </div>
+    </div>
+
+    <!-- Play button (below the box) -->
+    <button id="playBtn" class="play-btn" type="button" data-i18n="play">PLAY</button>
+  </main>
+
+  <!-- ===== Language selector ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- 1) Rive runtime -->
+  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
+  <!-- 2) shared language system -->
+  <script src="js/i18n.js"></script>
+  <!-- 3) this page's logic -->
+  <script src="js/mini-games.js"></script>
+</body>
+</html>

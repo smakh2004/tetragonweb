@@ -7,6 +7,8 @@
   --violet: #6c46f0;      /* "Download App" */
   --pink: #ff2e9a;        /* the "|" before EN */
   --ink: #2a2f3a;         /* "EN" text */
+  --team1: #ff4b4c;       /* team 1 (red) */
+  --team2: #29c1f0;       /* team 2 (blue) */
 }
 
 * {
@@ -221,4 +223,402 @@ body {
 /* ===== Short screens ===== */
 @media (max-height: 640px) {
   .hero { min-height: calc(100vh - 140px); }
+}
+
+
+/* =====================================================
+   MINI GAMES PAGE
+===================================================== */
+
+/* logo wrapped in a link back home */
+.logo-home {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* title centered in the top bar, no matter the side widths */
+.mini-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(18px, 1.8vw, 26px);
+  font-weight: 700;
+  color: var(--indigo-soft);
+  white-space: nowrap;
+}
+
+/* pink "Download App" (this page only) */
+.download-app--pink {
+  color: var(--pink);
+}
+
+/* main column: box + play, stacked + centered */
+.mini-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vh, 34px);
+  min-height: calc(100vh - 170px);
+  padding: 20px;
+}
+
+/* ===== ONE container: avatar (back) + toggle (front) ===== */
+.game-box {
+  position: relative;
+  width: clamp(340px, 50vw, 640px);
+  aspect-ratio: 1 / 1;
+}
+.game-box .avatar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: block;
+}
+.game-box .difficulty {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* ===== Difficulty toggle ===== */
+.difficulty {
+  display: inline-flex;
+  align-items: center;
+  background: #e9edf2;
+  border-radius: 999px;
+  padding: 5px;
+}
+.diff-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: clamp(14px, 1.3vw, 17px);
+  letter-spacing: 0.04em;
+  color: #9aa3ad;
+  padding: 10px 22px;
+  border-radius: 999px;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.diff-btn:hover {
+  color: #6b7480;
+}
+.diff-btn.active {
+  background: var(--cyan);
+  color: #fff;
+}
+
+/* ===== Play button ===== */
+.play-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: clamp(16px, 1.6vw, 22px);
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--cyan);
+  padding: 16px clamp(48px, 8vw, 90px);
+  border-radius: 999px;
+  transition: transform 0.12s ease;
+}
+.play-btn:active {
+  transform: translateY(1px);
+}
+
+
+/* =====================================================
+   GAME PAGE (two-team battle)
+===================================================== */
+
+/* Fill the space under the header and CENTER everything (both axes). */
+.game-wrap {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;               /* vertical centering */
+  justify-content: center;           /* horizontal centering */
+  gap: clamp(8px, 1.6vw, 30px);
+  width: 100%;
+  min-height: calc(100vh - 150px);   /* space below the top bar */
+  padding: clamp(8px, 1.5vh, 20px) clamp(16px, 2.5vw, 40px);
+}
+
+/* ----- team calculator panel (matches the reference image) ----- */
+.team-panel {
+  background: #fdfdfe;
+  border: 3px solid #edf0f3;         /* soft outer stroke */
+  border-radius: 50px;
+  padding: clamp(18px, 1.7vw, 26px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: clamp(320px, 26vw, 420px);
+  flex: 0 0 auto;
+}
+
+/* team header — pill outline, like the image */
+.team-head {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 14px;
+  border-radius: 999px;
+  border: 3px solid #edf0f3;
+  font-size: clamp(16px, 1.6vw, 20px);
+}
+.team1 .team-head { color: var(--team1); }
+.team2 .team-head { color: var(--team2); }
+
+/* equation row: "12+32=" [box] */
+.equation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: clamp(30px, 2.9vw, 44px);
+  font-weight: 800;
+  color: #4a5260;
+  margin: 4px 0;
+}
+
+/* answer box: SQUARE by default (width == height), STRETCHES for long answers */
+.eq-box {
+  height: 58px;
+  min-width: 58px;                   /* square when short (1–2 digits) */
+  width: auto;                       /* grow with the number */
+  padding: 0 14px;                   /* room for extra digits */
+  border-radius: 16px;
+  border: 3px solid var(--cyan);
+  background: #eaf7fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a4250;
+}
+.team1 .eq-box { border-color: var(--team1); background: #ffecec; }
+.team2 .eq-box { border-color: var(--team2); background: #eaf7fd; }
+
+/* typed-number display — pill, gray fill, WITH stroke */
+.display {
+  height: 60px;
+  border-radius: 999px;
+  background: #eef1f4;
+  border: 3px solid #e2e7ec;         /* stroke added */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 700;
+  color: #9aa3ad;
+}
+
+/* numpad */
+.pad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* Flatter pill keys — fixed shorter height so they aren't tall circles. */
+.key {
+  --key-h: 58px;
+  height: var(--key-h);
+  padding: 0;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 999px;
+  font-size: clamp(19px, 1.8vw, 24px);
+  font-weight: 700;
+  color: #3a4250;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.key:hover { background: #f5f7f9; }
+.key:active { transform: translateY(1px); }
+
+/* backspace — soft gray fill, WITH stroke */
+.key.back {
+  background: #eef1f4;
+  border-color: #e2e7ec;
+  color: #8b94a0;
+}
+.key.back:hover { background: #e6eaee; }
+
+/* minus — solid blue pill, WITH stroke */
+.key.op {
+  background: var(--cyan);
+  color: #fff;
+  border-color: #1eb4e6;
+}
+
+/* CHECK button: GRAY by default, BLUE pill when ready */
+.check-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 18px;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: clamp(16px, 1.5vw, 19px);
+  color: #aeb6c0;
+  background: #e9edf2;
+  cursor: default;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+.check-btn.ready {
+  color: #fff;
+  background: var(--cyan);
+  cursor: pointer;
+}
+.check-btn.ready:active { transform: translateY(1px); }
+
+/* ----- center column ----- (stacked) */
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 1.6vh, 22px);
+  flex: 0 0 auto;
+}
+/* when the result is showing, tighten the gap so it all fits */
+.center.has-result { gap: clamp(8px, 1.2vh, 16px); }
+
+/* timer pill — WITH clearer stroke */
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #fff;
+  border: 3px solid #edf0f3;         /* stroke made clearer (was 1px #eef1f4) */
+  border-radius: 999px;
+  padding: 11px 24px;
+}
+.clock { width: 34px; height: 34px; display: block; }
+.timer-text {
+  font-weight: 700;
+  color: var(--team1);
+  font-size: clamp(22px, 2.2vw, 32px);
+}
+
+.center-teams {
+  display: flex;
+  gap: clamp(24px, 3.5vw, 90px);
+  align-items: flex-start;
+}
+.team-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;                         /* tight: stars -> score -> avatar */
+}
+
+/* Big stars, score right under, avatar under that (slightly smaller so it fits) */
+.stars {
+  width: clamp(260px, 25vw, 370px);
+  height: clamp(90px, 9.5vw, 132px);
+  display: block;
+  margin-bottom: -10px;
+}
+.score  { font-weight: 900; font-size: clamp(48px, 5vw, 76px); line-height: 1; }
+.score-1 { color: var(--team1); }
+.score-2 { color: var(--team2); }
+.game-avatar {
+  width: clamp(190px, 20vw, 300px);
+  height: clamp(220px, 23vw, 330px);
+  display: block;
+  margin-top: -6px;
+}
+
+/* ----- countdown overlay ----- */
+.countdown {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.countdown.hide { display: none; }
+
+.countdown-text {
+  color: #fff;
+  font-weight: 900;
+  font-size: clamp(90px, 18vw, 230px);
+  line-height: 1;
+  text-align: center;
+}
+.countdown-text.go {
+  font-size: clamp(48px, 10vw, 150px);
+}
+.countdown-text.pop {
+  animation: countPop 0.85s ease both;
+}
+@keyframes countPop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  40%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* ----- result: flows UNDER the avatars inside .center (no overlap) ----- */
+.game-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  animation: resultIn 0.35s ease both;
+}
+.game-result[hidden] { display: none; }
+@keyframes resultIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.result-title {
+  font-size: clamp(26px, 3vw, 44px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.result-title.win-1 { color: var(--team1); }
+.result-title.win-2 { color: var(--team2); }
+
+/* round restart icon button */
+.restart-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: var(--cyan);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, filter 0.15s ease;
+}
+.restart-btn:hover { filter: brightness(1.05); }
+.restart-btn:active { transform: scale(0.94); }
+
+/* ----- stack on narrow screens ----- */
+@media (max-width: 1000px) {
+  .game-wrap {
+    flex-direction: column;
+    min-height: auto;
+    padding-bottom: 120px;
+    gap: 20px;
+  }
+  .center { order: -1; }            /* timer + avatars on top */
 }
