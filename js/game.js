@@ -24,21 +24,19 @@ window.Sound = (() => {
   let bgAudio = null;
   let unlocked = false;
 
-  // Pre-instantiate audio elements
   for (const key in FILES) {
     const audio = new Audio(FILES[key]);
     audio.preload = "auto";
     audio.volume = VOLUME[key] ?? 1.0;
 
     if (key === "bg") {
-      audio.loop = true;      // background music loops until we pause it
+      audio.loop = true;
       bgAudio = audio;
     } else {
       audioCache[key] = audio;
     }
   }
 
-  // Safe playback function
   function play(key) {
     if (!FILES[key]) return;
     try {
@@ -48,15 +46,11 @@ window.Sound = (() => {
       }
       const base = audioCache[key];
       if (!base) return;
-
-      // Clone audio node to allow overlapping rapid SFX plays
       const clone = base.cloneNode();
       clone.volume = base.volume;
       const playPromise = clone.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Autoplay was prevented or audio failed to load
-        });
+        playPromise.catch(() => {});
       }
     } catch (e) {
       console.warn("Audio play error:", e);
@@ -81,15 +75,11 @@ window.Sound = (() => {
     } catch (e) {}
   }
 
-  // Explicit user gesture handler to unlock audio context.
-  // NOTE: we only warm up the one-shot effect sounds here — NOT bgAudio.
-  // Touching bgAudio would pause the music right after it starts
-  // (e.g. on the first numpad tap).
   function unlock() {
     if (unlocked) return;
     unlocked = true;
 
-    const all = Object.values(audioCache);   // effects only — never touch bgAudio
+    const all = Object.values(audioCache);
     all.forEach((a) => {
       if (!a) return;
       a.muted = true;
@@ -292,6 +282,10 @@ function pressMinus(team) {
   render(team);
 }
 
+/* ---------- Build a numpad using POINTERDOWN for true multi-touch =====
+   pointerdown fires the instant each finger lands, per contact point,
+   independently — this is what lets both teams press different keys
+   at the exact same moment without either being dropped/delayed. */
 function buildPad(team) {
   const pad = document.getElementById("pad" + team);
   const keys = ["1","2","3","back", "4","5","6","minus", "7","8","9","0"];
@@ -304,19 +298,38 @@ function buildPad(team) {
     if (k === "back") {
       btn.classList.add("back");
       const icon = document.createElement("img");
-      icon.src = "assets/backspace.png";   // put your file at this path
+      icon.src = "assets/backspace.png";
       icon.alt = "Backspace";
       btn.appendChild(icon);
-      btn.addEventListener("click", () => pressBack(team));
+      addPress(btn, () => pressBack(team));
     } else if (k === "minus") {
       btn.classList.add("op");
       btn.textContent = "−";
-      btn.addEventListener("click", () => pressMinus(team));
+      addPress(btn, () => pressMinus(team));
     } else {
       btn.textContent = k;
-      btn.addEventListener("click", () => pressDigit(team, k));
+      addPress(btn, () => pressDigit(team, k));
     }
     pad.appendChild(btn);
+  });
+}
+
+// Attach a press handler that fires immediately per touch point,
+// and guards against the browser's follow-up "click" firing it twice.
+function addPress(el, handler) {
+  let firedByPointer = false;
+
+  el.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    firedByPointer = true;
+    handler();
+  });
+
+  // Fallback for environments without pointer events (rare) — only
+  // fires if pointerdown didn't already handle this interaction.
+  el.addEventListener("click", () => {
+    if (firedByPointer) { firedByPointer = false; return; }
+    handler();
   });
 }
 
@@ -412,7 +425,7 @@ function endGame(winner) {
   lastWinner = winner;
   if (timerId) clearInterval(timerId);
 
-  sfxStopBg();   // background music stops when the game finishes
+  sfxStopBg();
   if (winner === 1 || winner === 2) {
     fireTrigger(avatarVM[winner], "winner");
     sfx("win");
@@ -487,7 +500,7 @@ function runCountdown() {
 function beginGame() {
   if (started) return;
   started = true;
-  sfxStartBg();   // background music starts and loops until endGame()
+  sfxStartBg();
   startTimer();
   render(1);
   render(2);
@@ -500,10 +513,9 @@ newProblem(1);
 newProblem(2);
 renderScores();
 
-document.getElementById("check1").addEventListener("click", () => check(1));
-document.getElementById("check2").addEventListener("click", () => check(2));
+// CHECK buttons also use pointerdown for the same multi-touch reason.
+addPress(document.getElementById("check1"), () => check(1));
+addPress(document.getElementById("check2"), () => check(2));
 
-// Try to unlock audio immediately (works if the PLAY click carried over),
-// then start the countdown right away — no play button.
 if (window.Sound && window.Sound.unlock) window.Sound.unlock();
 runCountdown();
