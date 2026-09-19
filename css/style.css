@@ -49,8 +49,11 @@ body {
   padding: clamp(18px, 3vw, 34px) clamp(22px, 4vw, 48px);
 }
 .logo {
-  height: clamp(22px, 2.2vw, 30px);
+  /* Uses cqw/vw scaling so it shrinks smoothly on narrow screens */
+  height: clamp(20px, 3.5vw, 32px);
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
   display: block;
 }
 .download-app {
@@ -81,20 +84,22 @@ body {
   aspect-ratio: 1000 / 560;
 }
 
-/* Big word - BEHIND the animation.
-   DIAL: 19vw scales with the window, 400px caps it on wide screens. */
+/* Big word - BEHIND the animation */
 .science {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  font-size: clamp(60px, 19vw, 400px);   /* was clamp(72px, 22vw, 560px) */
+  /* Uses min() so it scales smoothly down on small screens while obeying the clamp max */
+  font-size: clamp(32px, 15vw, 400px);
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
   color: var(--cyan);
   white-space: nowrap;
+  max-width: 90%;
+  text-align: center;
 }
 
 /* ===== Labels ===== */
@@ -111,34 +116,33 @@ body {
   line-height: 1.1;
 }
 .label-math {
-  font-size: clamp(24px, 3vw, 48px);     /* was clamp(26px, 3.4vw, 56px) */
+  font-size: clamp(16px, 2.5vw, 48px);
   font-weight: 700;
-  color: var(--cyan);
-}
-.label-physics {
-  font-size: clamp(24px, 3vw, 48px);     /* was clamp(26px, 3.4vw, 56px) */
-  font-weight: 700;
-  color: var(--indigo);
+  color: var(--cyan); /* Cyan color restored */
 }
 
-/* always learn - BEHIND the animation (z-index 1) */
+.label-physics {
+  font-size: clamp(16px, 2.5vw, 48px);
+  font-weight: 700;
+  color: var(--indigo); /* Indigo color restored */
+}
+
 .label-always {
   position: absolute;
   top: 3%;
   right: 27%;
   z-index: 1;
-  font-size: clamp(17px, 2vw, 32px);     /* was clamp(18px, 2.3vw, 36px) */
+  font-size: clamp(12px, 1.8vw, 32px);
   font-weight: 500;
   color: var(--indigo-soft);
 }
 
-/* Mini Games - stays ON TOP (z-index 3), it's the clickable link */
 .label-mini {
   position: absolute;
   bottom: 11%;
   right: 8%;
   z-index: 3;
-  font-size: clamp(24px, 2.8vw, 44px);   /* was clamp(26px, 3vw, 50px) */
+  font-size: clamp(16px, 2.2vw, 44px);
   font-weight: 600;
   color: var(--indigo-soft);
   text-decoration: none;
@@ -235,6 +239,7 @@ body {
 .logo-home {
   display: inline-flex;
   align-items: center;
+  max-width: 40vw; /* Prevents logo from crushing center titles on narrow header bars */
 }
 
 /* title centered in the top bar, no matter the side widths */
@@ -354,14 +359,16 @@ body {
 
 /* ----- team calculator panel (matches the reference image) ----- */
 .team-panel {
+  container-type: inline-size;
   background: #fdfdfe;
-  border: 3px solid #edf0f3;         /* soft outer stroke */
+  border: 3px solid #edf0f3;
   border-radius: 50px;
-  padding: clamp(18px, 1.7vw, 26px);
+  padding: clamp(14px, 1.7vw, 26px);
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: clamp(320px, 26vw, 420px);
+  width: clamp(280px, 26vw, 420px);
+  max-width: 100%;
   flex: 0 0 auto;
 }
 
@@ -383,8 +390,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  font-size: clamp(30px, 2.9vw, 44px);
+  gap: 8px;
+  font-size: clamp(20px, 8cqw, 44px);
   font-weight: 800;
   color: #4a5260;
   margin: 4px 0;
@@ -596,11 +603,11 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 .result-title {
-  font-size: clamp(26px, 3vw, 44px);
+  font-size: clamp(18px, 2.5vw, 44px);
   font-weight: 800;
   color: var(--ink);
   letter-spacing: 0.02em;
-  white-space: nowrap;
+  text-align: center;
 }
 .result-title.win-1 { color: var(--team1); }
 .result-title.win-2 { color: var(--team2); }
@@ -622,15 +629,101 @@ body {
 .restart-btn:hover { filter: brightness(1.05); }
 .restart-btn:active { transform: scale(0.94); }
 
-/* ----- stack on narrow screens ----- */
+/* ----- responsive adjustment for small / narrow screens ----- */
 @media (max-width: 1000px) {
   .game-wrap {
-    flex-direction: column;
+    flex-wrap: wrap;                 /* Allows center header and team calculators to wrap */
+    flex-direction: row;             /* Keeps the two calculator panels side-by-side */
+    justify-content: center;
+    align-items: flex-start;
     min-height: auto;
-    padding-bottom: 120px;
-    gap: 20px;
+    padding-bottom: 60px;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 8px;
   }
-  .center { order: -1; }            /* timer + avatars on top */
+
+  .center {
+    order: -1;                       /* Timer + avatars stay on top */
+    width: 100%;                     /* Takes full width above calculators */
+    margin-bottom: 8px;
+  }
+
+  /* Make sure center avatars space nicely above their calculators */
+  .center-teams {
+    width: 100%;
+    justify-content: space-around;
+    gap: 8px;
+  }
+
+  /* Scale center avatar visuals down so they don't consume all screen height */
+  .stars {
+    width: clamp(120px, 38vw, 220px);
+    height: auto;
+  }
+  .game-avatar {
+    width: clamp(100px, 30vw, 180px);
+    height: auto;
+  }
+  .score {
+    font-size: clamp(32px, 8vw, 52px);
+  }
+
+  /* Both calculators sit side-by-side (2 columns) */
+  .team-panel {
+    flex: 1 1 48%;                  /* Each calculator takes roughly half screen width */
+    min-width: 0;                   /* Allows smooth flex shrinking */
+    max-width: 50%;
+    border-radius: 24px;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  /* Scale calculator elements slightly to fit small screen widths cleanly */
+  .team-head {
+    padding: 6px;
+    font-size: 13px;
+    border-width: 2px;
+  }
+
+  .equation {
+    font-size: clamp(16px, 4cqw, 24px);
+    margin: 2px 0;
+  }
+
+  .eq-box {
+    height: 38px;
+    min-width: 38px;
+    padding: 0 8px;
+    border-radius: 10px;
+    border-width: 2px;
+  }
+
+  .display {
+    height: 38px;
+    font-size: 18px;
+    border-width: 2px;
+  }
+
+  .pad {
+    gap: 4px;
+  }
+
+  .key {
+    --key-h: 42px;
+    font-size: 15px;
+    border-width: 2px;
+  }
+
+  .key.back img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .check-btn {
+    padding: 10px;
+    font-size: 13px;
+  }
 }
 
 /* Prevent selection, zooming, and context menus during multi-touch play */
