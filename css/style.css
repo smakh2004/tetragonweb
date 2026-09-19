@@ -11,11 +11,33 @@
   --team2: #29c1f0;       /* team 2 (blue) */
 }
 
-* {
+/* ===== REMOVE MOBILE TAP HIGHLIGHT GLOBALLY ===== */
+*,
+*::before,
+*::after,
+button,
+a,
+input,
+div,
+span,
+canvas,
+rive-canvas {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   touch-action: manipulation;   /* lets two simultaneous touches register as taps, not a pinch/zoom gesture */
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+  -webkit-touch-callout: none;
+  outline: none !important;
+}
+
+*:focus,
+*:focus-visible,
+*:active {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+  outline: none !important;
 }
 
 body {
@@ -165,10 +187,21 @@ body {
   color: var(--indigo-soft);
   text-decoration: none;
   cursor: pointer;
+
+  /* Smooth return animation */
+  display: inline-block;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease;
+  will-change: transform;
 }
 
 .label-mini:hover {
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+/* Push down slightly when pressed/tapped */
+.label-mini:active {
+  transform: translateY(3px) scale(0.96);
+  opacity: 0.7;
 }
 
 /* ===== Language selector (bottom-left) ===== */
@@ -377,10 +410,12 @@ body {
   display: flex;
   align-items: center;              /* vertical centering */
   justify-content: center;           /* horizontal centering */
-  gap: clamp(8px, 1.6vw, 30px);
+  gap: clamp(16px, 2.5vw, 48px);
   width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
   min-height: calc(100vh - 150px);   /* space below the top bar */
-  padding: clamp(8px, 1.5vh, 20px) clamp(16px, 2.5vw, 40px);
+  padding: clamp(8px, 1.5vh, 20px) clamp(12px, 2vw, 32px);
   box-sizing: border-box;
 }
 
@@ -389,14 +424,15 @@ body {
   container-type: inline-size;
   background: #fdfdfe;
   border: 3px solid #edf0f3;
-  border-radius: 50px;
-  padding: clamp(14px, 1.7vw, 26px);
+  border-radius: 36px;
+  padding: clamp(14px, 1.6vw, 28px);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  width: clamp(280px, 26vw, 420px);
-  max-width: 100%;
-  flex: 0 0 auto;
+  gap: clamp(10px, 1.4vw, 18px);
+  width: auto;
+  max-width: 460px;
+  min-width: 280px;
+  flex: 1 1 340px;                   /* Expands flexibly to widen calculators */
   box-sizing: border-box;
 }
 
@@ -405,10 +441,10 @@ body {
   text-align: center;
   font-weight: 700;
   letter-spacing: 0.05em;
-  padding: 14px;
+  padding: clamp(8px, 1vw, 14px);
   border-radius: 999px;
   border: 3px solid #edf0f3;
-  font-size: clamp(16px, 1.6vw, 20px);
+  font-size: clamp(13px, 1.3vw, 20px);
 }
 
 .team1 .team-head { color: var(--team1); }
@@ -420,19 +456,19 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: clamp(20px, 8cqw, 44px);
+  font-size: clamp(18px, 8cqw, 42px);
   font-weight: 800;
   color: #4a5260;
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 /* answer box: SQUARE by default, STRETCHES for long answers */
 .eq-box {
-  height: 58px;
-  min-width: 58px;
+  height: clamp(42px, 4vw, 58px);
+  min-width: clamp(42px, 4vw, 58px);
   width: auto;
-  padding: 0 14px;
-  border-radius: 16px;
+  padding: 0 10px;
+  border-radius: 14px;
   border: 3px solid var(--cyan);
   background: #eaf7fd;
   display: inline-flex;
@@ -447,14 +483,14 @@ body {
 
 /* typed-number display — pill, gray fill, WITH stroke */
 .display {
-  height: 60px;
+  height: clamp(42px, 4vw, 60px);
   border-radius: 999px;
   background: #eef1f4;
   border: 3px solid #e2e7ec;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(24px, 2.2vw, 32px);
+  font-size: clamp(18px, 1.8vw, 30px);
   font-weight: 700;
   color: #9aa3ad;
   box-sizing: border-box;
@@ -464,18 +500,18 @@ body {
 .pad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: clamp(6px, 0.8vw, 12px);
 }
 
 /* Flatter pill keys */
 .key {
-  --key-h: 58px;
+  --key-h: clamp(40px, 3.8vw, 58px);
   height: var(--key-h);
   padding: 0;
   border: 3px solid #eef1f4;
   background: #fff;
   border-radius: 999px;
-  font-size: clamp(19px, 1.8vw, 24px);
+  font-size: clamp(15px, 1.5vw, 24px);
   font-weight: 700;
   color: #3a4250;
   cursor: pointer;
@@ -500,8 +536,8 @@ body {
 .key.back:hover { background: #e6eaee; }
 
 .key.back img {
-  width: 32px;
-  height: 32px;
+  width: clamp(20px, 2vw, 32px);
+  height: clamp(20px, 2vw, 32px);
   object-fit: contain;
   display: block;
   pointer-events: none;
@@ -518,11 +554,11 @@ body {
 .check-btn {
   border: none;
   border-radius: 999px;
-  padding: 18px;
+  padding: clamp(10px, 1.2vw, 18px);
   font-family: inherit;
   font-weight: 700;
   letter-spacing: 0.06em;
-  font-size: clamp(16px, 1.5vw, 19px);
+  font-size: clamp(13px, 1.2vw, 19px);
   color: #aeb6c0;
   background: #e9edf2;
   cursor: default;
@@ -543,8 +579,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(12px, 1.6vh, 22px);
-  flex: 0 0 auto;
+  gap: clamp(10px, 1.4vh, 22px);
+  flex: 0 1 auto;
 }
 
 .center.has-result { gap: clamp(8px, 1.2vh, 16px); }
@@ -553,25 +589,27 @@ body {
 .timer {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   background: #fff;
   border: 3px solid #edf0f3;
   border-radius: 999px;
-  padding: 11px 24px;
+  padding: clamp(6px, 0.8vw, 11px) clamp(16px, 1.5vw, 24px);
   box-sizing: border-box;
 }
 
-.clock { width: 34px; height: 34px; display: block; }
+.clock { width: clamp(24px, 2vw, 34px); height: clamp(24px, 2vw, 34px); display: block; }
 .timer-text {
   font-weight: 600;
   color: var(--team1);
-  font-size: clamp(22px, 2.2vw, 26px);
+  font-size: clamp(18px, 1.8vw, 26px);
 }
 
 .center-teams {
   display: flex;
-  gap: clamp(24px, 3.5vw, 90px);
+  gap: clamp(16px, 3vw, 60px);
   align-items: flex-start;
+  justify-content: center;
+  width: 100%;
 }
 
 .team-visual {
@@ -581,21 +619,25 @@ body {
   gap: 2px;
 }
 
+/* LARGE DISPLAY SIZES */
 .stars {
-  width: clamp(260px, 25vw, 370px);
-  height: clamp(90px, 9.5vw, 132px);
+  width: clamp(160px, 18vw, 380px);
+  height: auto;
+  aspect-ratio: 370 / 132;
   display: block;
   margin-bottom: -10px;
   object-fit: contain;
 }
 
-.score { font-weight: 900; font-size: clamp(48px, 5vw, 76px); line-height: 1; }
+.score { font-weight: 900; font-size: clamp(32px, 4vw, 76px); line-height: 1; }
 .score-1 { color: var(--team1); }
 .score-2 { color: var(--team2); }
 
+/* LARGE DISPLAY SIZES */
 .game-avatar {
-  width: clamp(190px, 20vw, 300px);
-  height: clamp(220px, 23vw, 330px);
+  width: clamp(160px, 16vw, 360px);
+  height: auto;
+  aspect-ratio: 300 / 330;
   display: block;
   margin-top: -6px;
   object-fit: contain;
@@ -682,6 +724,34 @@ body {
 .restart-btn:active { transform: scale(0.94); }
 
 /* =====================================================
+   MID-RANGE DISPLAY FIX (1001px to 1350px)
+===================================================== */
+@media screen and (max-width: 1350px) and (min-width: 1001px) {
+  .game-wrap {
+    padding: 10px 16px;
+    gap: 16px;
+  }
+
+  .center-teams {
+    gap: 18px;
+  }
+
+  .stars {
+    width: clamp(130px, 14vw, 240px);
+  }
+
+  .game-avatar {
+    width: clamp(130px, 13vw, 220px);
+  }
+
+  .team-panel {
+    padding: 14px;
+    border-radius: 28px;
+    min-width: 250px;
+  }
+}
+
+/* =====================================================
    RESPONSIVE ADJUSTMENTS (<= 1000px)
 ===================================================== */
 @media (max-width: 1000px) {
@@ -690,9 +760,8 @@ body {
     /* Lower minimum size (12px) and scaling rate (2.2vw) for small screens */
     height: clamp(12px, 2.2vw, 20px);
   }
+
   /* Enlarge Mr. Square Hero Character on small/mobile screens */
-  @media (max-width: 1000px) {
-  /* 1. Снимаем ограничения с родительских оберток */
   .hero-character,
   .hero-center-avatar,
   .hero-center,
@@ -715,7 +784,6 @@ body {
     justify-content: center !important;
     align-items: center !important;
   }
-}
 
   /* Centered stage alignment */
   .hero {
