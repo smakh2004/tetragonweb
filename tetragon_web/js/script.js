@@ -1,6 +1,7 @@
 /* =====================================================
-   INDEX PAGE — Mr Square full-page background animation
-   (the language system now lives in js/i18n.js)
+   INDEX PAGE — Mr Square animation, now scoped to .stage
+   so it scales down together with the hero on small screens.
+   (the language system lives in js/i18n.js)
 ===================================================== */
 const canvas = document.getElementById("mrSquare");
 
@@ -15,7 +16,7 @@ const r = new rive.Rive({
   autoBind: true,
 
   layout: new rive.Layout({
-    fit: rive.Fit.Cover,            // Cover = fills the page, keeps proportions
+    fit: rive.Fit.Contain,          // Contain: shrinks WITH the box, no cropping
     alignment: rive.Alignment.Center,
   }),
 

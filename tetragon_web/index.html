@@ -19,9 +19,6 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- Full-page background animation -->
-  <canvas id="mrSquare" class="rive-bg"></canvas>
-
   <!-- ===== Top bar ===== -->
   <header class="topbar">
     <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
@@ -34,6 +31,10 @@
   <!-- ===== Center hero ===== -->
   <main class="hero">
     <div class="stage">
+      <!-- Animation moved INSIDE .stage so it shrinks together with
+           the SCIENCE word and labels on small screens -->
+      <canvas id="mrSquare" class="rive-bg"></canvas>
+
       <div class="labels-left">
         <span class="label-math" data-i18n="math">math</span>
         <span class="label-physics" data-i18n="physics">physics</span>
