@@ -170,13 +170,18 @@
     padding: 0 clamp(10px, 3vw, 20px) clamp(24px, 6vh, 50px);
     gap: clamp(10px, 2.5vh, 26px);
   }
-  /* cards STAY IN A ROW (3 across) — just smaller, and NO negative pull (would cover the title) */
-  .plans { gap: clamp(8px, 2vw, 14px); margin: 0 auto; }
+  /* cards STACK — one full-width card per row */
+  .plans {
+    grid-template-columns: 1fr;
+    gap: clamp(12px, 3vw, 18px);
+    max-width: 440px;
+    margin: 0 auto;
+  }
   .plan {
-    padding: clamp(12px, 3vw, 20px) clamp(10px, 2.4vw, 16px);
-    border-radius: 22px;
-    gap: clamp(8px, 2vw, 14px);
-    min-height: clamp(210px, 28vh, 290px);   /* shorter on phones */
+    padding: clamp(16px, 4vw, 22px);
+    border-radius: 20px;
+    gap: 10px;
+    min-height: 0;            /* size to content when stacked */
   }
   .plan--featured { border-radius: 22px 18px 22px 22px; }
   .plan-price b { font-size: clamp(16px, 4.4vw, 26px); }
