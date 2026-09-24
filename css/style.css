@@ -700,7 +700,9 @@ body {
   max-width: 1800px;
   margin: 0 auto;
   min-height: calc(100vh - 150px);   /* space below the top bar */
-  padding: clamp(8px, 1.5vh, 20px) clamp(12px, 2vw, 32px);
+  /* extra bottom space keeps the center column (timer + avatars) clear of the
+     fixed language switcher / sound toggle pinned at the bottom */
+  padding: clamp(8px, 1.5vh, 20px) clamp(12px, 2vw, 32px) clamp(60px, 8vh, 96px);
   box-sizing: border-box;
 }
 
@@ -1131,7 +1133,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* LARGE DISPLAY SIZES */
 .stars {
-  width: clamp(110px, min(18vw, 19vh), 380px);
+  width: clamp(150px, min(18vw, 36vh), 380px);
   height: auto;
   aspect-ratio: 370 / 132;
   display: block;
@@ -1145,7 +1147,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* LARGE DISPLAY SIZES */
 .game-avatar {
-  width: clamp(120px, min(16vw, 21vh), 360px);
+  width: clamp(150px, min(16vw, 32vh), 360px);
   height: auto;
   aspect-ratio: 300 / 330;
   display: block;
