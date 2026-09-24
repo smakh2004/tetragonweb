@@ -206,18 +206,19 @@ body {
 
 /* ===== Language selector (bottom-left) ===== */
 .langbar {
-  position: absolute;
+  position: fixed;                 /* pin to the viewport so it stays visible even
+                                      when the page is taller than a short screen */
   bottom: clamp(20px, 3vw, 34px);
   left: clamp(22px, 4vw, 48px);
-  z-index: 3;
+  z-index: 20;
 }
 
 /* ===== Sound toggle (bottom-right) ===== */
 .soundbar {
-  position: absolute;
+  position: fixed;                 /* same: always reachable on short laptop screens */
   bottom: clamp(20px, 3vw, 34px);
   right: clamp(22px, 4vw, 48px);
-  z-index: 3;
+  z-index: 20;
 }
 .sound-btn {
   background: none;
@@ -312,6 +313,15 @@ body {
 /* ===== Short screens ===== */
 @media (max-height: 640px) {
   .hero { min-height: calc(100vh - 140px); }
+
+  /* short laptop screens: let the page grow & scroll instead of clipping,
+     and keep clear space at the bottom for the pinned language / sound bars */
+  .mini-main {
+    align-items: flex-start;
+    min-height: auto;
+    padding-bottom: clamp(56px, 12vh, 96px);
+  }
+  .langbar, .soundbar { bottom: 14px; }
 }
 
 /* =====================================================

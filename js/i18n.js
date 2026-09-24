@@ -421,8 +421,8 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeMenu();
 });
 
-// On first load: use the saved language if there is one, otherwise English.
-let startLang = "en";
+// On first load: use the saved language if there is one, otherwise Uzbek.
+let startLang = "uz";
 try {
   const saved = localStorage.getItem("tetragon_lang");
   if (saved && translations[saved]) startLang = saved;
