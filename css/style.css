@@ -1164,17 +1164,20 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 /* Only on genuinely short screens: shrink stars/avatar so the center column
    still clears the fixed language switcher (placed AFTER the base rules so it
    wins). Normal-height screens keep the big sizes above. */
-@media (max-height: 680px) {
-  .stars      { width: clamp(120px, 26vh, 430px); }
-  .game-avatar { width: clamp(130px, 30vh, 410px); }
-  /* let the game area be only as tall as its content and reserve less at the
-     bottom, so even very short screens keep everything above the language bar */
-  .game-wrap  { min-height: 0; padding-bottom: clamp(44px, 7vh, 64px); }
-  /* extra compression for the dense panels (column mode especially) */
-  .col-cell   { height: clamp(26px, 6.4vh, 62px); font-size: clamp(16px, 5vh, 42px); }
-  .key        { --key-h: clamp(26px, 5.4vh, 58px); }
-  /* shrink the round canvases (fraction pie, clock, perimeter shape) too */
-  .frac-circle, .peri-shape, .clock-face { max-width: clamp(110px, 26vh, 300px); }
+/* On any less-than-tall screen (most laptops): scale the whole game down so it
+   sits fully inside the viewport with a clear gap above the language bar —
+   nothing touching the bottom. */
+@media (max-height: 860px) {
+  .stars       { width: clamp(120px, 24vh, 430px); }
+  .game-avatar { width: clamp(130px, 28vh, 410px); }
+  /* the game area is only as tall as its content and keeps a real bottom margin */
+  .game-wrap   { min-height: 0; padding-bottom: clamp(48px, 8vh, 90px); }
+  /* dense panels (column especially) */
+  .col-cell    { height: clamp(26px, 6vh, 62px); font-size: clamp(16px, 4.6vh, 42px); }
+  .key         { --key-h: clamp(26px, 5vh, 58px); }
+  .display     { height: clamp(30px, 5vh, 60px); }
+  /* round canvases (fraction pie, clock, perimeter shape) */
+  .frac-circle, .peri-shape, .clock-face { max-width: clamp(110px, 24vh, 300px); }
 }
 
 /* ----- countdown overlay ----- */
