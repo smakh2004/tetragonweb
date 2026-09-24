@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon — Account</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="account-page">
+
+  <!-- ===== Top bar (no Log In here — you're already signed in) ===== -->
+  <header class="topbar">
+    <a href="index.html" class="logo-home">
+      <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+    </a>
+    <span class="mini-title" data-i18n="account">Account</span>
+    <span class="topbar-spacer" aria-hidden="true"></span>
+  </header>
+
+  <!-- ===== Account card ===== -->
+  <main class="acct-page">
+    <!-- shown until we know who is signed in -->
+    <div class="acct-loading" id="acctLoading" data-i18n="loadingWord">Loading…</div>
+
+    <div class="acct-card" id="acctCard" hidden>
+
+      <!-- who -->
+      <div class="acct-head">
+        <span id="acctAvatar"></span>
+        <div class="acct-id">
+          <div class="acct-name" id="acctName"></div>
+          <div class="acct-email" id="acctEmail"></div>
+        </div>
+      </div>
+
+      <!-- subscription -->
+      <div class="acct-plan">
+        <span class="acct-plan-label" data-i18n="subscription">Subscription</span>
+        <div class="acct-plan-row">
+          <b class="acct-plan-name" id="acctPlanName" hidden></b>
+          <span class="acct-plan-badge" id="acctPlan">Free</span>
+          <button class="acct-sub-btn" id="subscribeBtn" type="button" data-i18n="subscribe">Subscribe</button>
+        </div>
+      </div>
+
+      <!-- subscription start / end (shown only when active) -->
+      <div class="acct-plan-dates" id="acctPlanDates" hidden>
+        <div class="acct-date">
+          <span class="acct-date-label" data-i18n="subStarted">Started</span>
+          <b class="acct-date-val" id="acctPlanStart">—</b>
+        </div>
+        <div class="acct-date">
+          <span class="acct-date-label" data-i18n="subEnds">Ends</span>
+          <b class="acct-date-val" id="acctPlanEnd">—</b>
+        </div>
+      </div>
+
+      <!-- change name -->
+      <form class="acct-form" id="nameForm">
+        <label data-i18n="displayNameLabel">Display name</label>
+        <div class="acct-row">
+          <input id="nameInput" type="text" placeholder="Your name" data-i18n-placeholder="phYourName" />
+          <button type="submit" data-i18n="saveWord">Save</button>
+        </div>
+      </form>
+
+      <!-- message line -->
+      <div class="acct-msg" id="acctMsg" hidden></div>
+
+      <!-- sign out -->
+      <button class="acct-signout" id="signoutBtn" type="button" data-i18n="signOut">Sign Out</button>
+
+    </div>
+  </main>
+
+  <!-- ===== Language selector (bottom-left) ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- shared language system (optional labels) -->
+  <script src="js/i18n.js"></script>
+  <!-- account logic -->
+  <script type="module" src="js/account.js"></script>
+</body>
+</html>

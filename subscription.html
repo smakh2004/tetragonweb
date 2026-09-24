@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon — Premium</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/subscription.css" />
+</head>
+<body class="sub-page">
+
+  <main class="sub-main">
+
+    <!-- ===== Hero ===== -->
+    <header class="sub-hero">
+      <h1 class="sub-title">
+        <span class="sub-premium">PREMIUM</span>
+        <!-- white TETRAGON logo (add assets/tetragon_white.png); doubles as home link -->
+        <a href="index.html" class="sub-brand" aria-label="Home">
+          <img src="assets/tetragon_white.png" alt="Tetragon" />
+        </a>
+      </h1>
+      <!-- Mr Square premium Rive animation (add rive/premium.riv) -->
+      <canvas id="premiumRive" class="sub-hero-img"></canvas>
+    </header>
+
+    <!-- ===== Plans ===== -->
+    <section class="plans">
+
+      <!-- Start -->
+      <article class="plan">
+        <div class="plan-head">
+          <h3 class="plan-name">Start</h3>
+          <span class="plan-dur" data-i18n="subMo1">1 oylik</span>
+        </div>
+        <div class="plan-price"><b>39&nbsp;000</b> <span data-i18n="subSom">so'm</span></div>
+        <div class="plan-feat"><span class="feat-strong" data-i18n="subUn1">Cheksiz</span> <span data-i18n="subUn2">o'yinlar</span></div>
+        <button class="plan-btn" type="button" data-plan="start" data-i18n="subStartBtn">Boshlash</button>
+      </article>
+
+      <!-- Plus (featured) -->
+      <article class="plan plan--featured">
+        <span class="plan-ribbon" data-i18n="subBest">Manfaatli</span>
+        <div class="plan-head">
+          <h3 class="plan-name">Plus</h3>
+          <span class="plan-dur plan-dur--grad" data-i18n="subMo3">3 oylik</span>
+        </div>
+        <div class="plan-price"><b>79&nbsp;000</b> <span data-i18n="subSom">so'm</span></div>
+        <div class="plan-feat"><span class="feat-strong" data-i18n="subUn1">Cheksiz</span> <span data-i18n="subUn2">o'yinlar</span></div>
+        <button class="plan-btn plan-btn--grad" type="button" data-plan="plus" data-i18n="subStartBtn">Boshlash</button>
+      </article>
+
+      <!-- Pro -->
+      <article class="plan">
+        <div class="plan-head">
+          <h3 class="plan-name">Pro</h3>
+          <span class="plan-dur" data-i18n="subMo12">12 oylik</span>
+        </div>
+        <div class="plan-price"><b>299&nbsp;000</b> <span data-i18n="subSom">so'm</span></div>
+        <div class="plan-feat"><span class="feat-strong" data-i18n="subUn1">Cheksiz</span> <span data-i18n="subUn2">o'yinlar</span></div>
+        <button class="plan-btn" type="button" data-plan="pro" data-i18n="subStartBtn">Boshlash</button>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- ===== Language selector (bottom-left) ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">UZ</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- Rive runtime (for the premium hero animation) -->
+  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
+  <!-- shared language system (uses the saved language, no switcher needed here) -->
+  <script src="js/i18n.js"></script>
+  <!-- subscription logic (login gate + activate + hero Rive) -->
+  <script type="module" src="js/subscription.js"></script>
+</body>
+</html>

@@ -16,7 +16,8 @@
 
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="game-page">
+<!-- data-mode="operation" -> game.js runs the calculator game here -->
+<body class="game-page" data-mode="operation">
 
   <!-- ===== Countdown overlay (3 - 2 - 1 - GO!) ===== -->
   <div class="countdown" id="countdown">
@@ -29,10 +30,10 @@
       <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
     </a>
     <span class="mini-title" data-i18n="mini">Mini Games</span>
-    <a class="download-app download-app--pink"
-       href="https://play.google.com/store/apps/details?id=com.tetragon.app"
-       target="_blank" rel="noopener noreferrer"
-       data-i18n="download">Download App</a>
+    <a class="download-app download-app--pink login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
   </header>
 
   <!-- ===== Game ===== -->
@@ -42,14 +43,16 @@
     <section class="team-panel team1">
       <div class="team-head" data-i18n="team1">1 TEAM</div>
 
-      <div class="equation">
-        <span class="eq-text" id="eqText1">…</span>
-        <span class="eq-box" id="eqBox1"></span>
+      <div class="calc-mode">
+        <div class="equation">
+          <span class="eq-text" id="eqText1">…</span>
+          <span class="eq-box" id="eqBox1"></span>
+        </div>
+
+        <div class="display" id="display1"></div>
+
+        <div class="pad" id="pad1"></div>
       </div>
-
-      <div class="display" id="display1"></div>
-
-      <div class="pad" id="pad1"></div>
 
       <button class="check-btn" id="check1" type="button" data-i18n="check">CHECK</button>
     </section>
@@ -92,20 +95,22 @@
     <section class="team-panel team2">
       <div class="team-head" data-i18n="team2">2 TEAM</div>
 
-      <div class="equation">
-        <span class="eq-text" id="eqText2">…</span>
-        <span class="eq-box" id="eqBox2"></span>
+      <div class="calc-mode">
+        <div class="equation">
+          <span class="eq-text" id="eqText2">…</span>
+          <span class="eq-box" id="eqBox2"></span>
+        </div>
+
+        <div class="display" id="display2"></div>
+
+        <div class="pad" id="pad2"></div>
       </div>
-
-      <div class="display" id="display2"></div>
-
-      <div class="pad" id="pad2"></div>
 
       <button class="check-btn" id="check2" type="button" data-i18n="check">CHECK</button>
     </section>
   </main>
 
-  <!-- ===== Language selector ===== -->
+  <!-- ===== Language selector (bottom-left) ===== -->
   <footer class="langbar">
     <div class="lang-switch" id="langSwitch">
       <span class="bar">|</span>
@@ -113,6 +118,22 @@
       <div class="lang-options" id="langOptions"></div>
     </div>
   </footer>
+
+  <!-- ===== Sound toggle (bottom-right) — cyan when ON, gray when OFF ===== -->
+  <div class="soundbar">
+    <button class="sound-btn" id="soundBtn" type="button" aria-label="Sound on/off" aria-pressed="true">
+      <svg class="ico-on" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+        <path d="M16 8.5a4 4 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <path d="M18.5 6a7.5 7.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <svg class="ico-off" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+        <line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
 
   <!-- 1) Rive runtime -->
   <script src="https://unpkg.com/@rive-app/canvas@2"></script>
@@ -122,5 +143,7 @@
   <script src="js/sound.js"></script>
   <!-- 4) game logic -->
   <script src="js/game.js"></script>
+  <!-- user menu (shows avatar + name when signed in) -->
+  <script type="module" src="js/user-menu.js"></script>
 </body>
 </html>

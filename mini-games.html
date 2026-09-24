@@ -25,33 +25,131 @@
 
     <span class="mini-title" data-i18n="mini">Mini Games</span>
 
-    <a class="download-app download-app--pink"
-       href="https://play.google.com/store/apps/details?id=com.tetragon.app"
-       target="_blank" rel="noopener noreferrer"
-       data-i18n="download">Download App</a>
+    <a class="download-app download-app--pink login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
   </header>
 
-  <!-- ===== Center content ===== -->
+  <!-- ===== Center content: LEFT (difficulty + avatar + play) | RIGHT (game type) ===== -->
   <main class="mini-main">
 
-    <!-- ONE container: avatar in the back, toggle on top of it -->
-    <div class="game-box">
-      <!-- avatar sits BEHIND, filling the box -->
-      <canvas id="avatar" class="avatar"></canvas>
-
-      <!-- toggle floats ON TOP, near the top of the box -->
+    <!-- ===== LEFT column ===== -->
+    <div class="mini-left">
+      <!-- Difficulty toggle -->
       <div class="difficulty" role="group" aria-label="Difficulty">
         <button class="diff-btn active" data-diff="easy"   type="button" data-i18n="easy">EASY</button>
         <button class="diff-btn"        data-diff="medium" type="button" data-i18n="medium">MEDIUM</button>
         <button class="diff-btn"        data-diff="hard"   type="button" data-i18n="hard">HARD</button>
       </div>
+
+      <!-- Avatar -->
+      <div class="game-box">
+        <canvas id="avatar" class="avatar"></canvas>
+      </div>
+
+      <!-- Play button -->
+      <button id="playBtn" class="play-btn" type="button" data-i18n="play">PLAY</button>
     </div>
 
-    <!-- Play button (below the box) -->
-    <button id="playBtn" class="play-btn" type="button" data-i18n="play">PLAY</button>
+    <!-- ===== RIGHT column: game-type selector ===== -->
+    <div class="mini-right">
+      <!-- panel + custom scrollbar side by side -->
+      <div class="type-wrap">
+
+        <div class="type-panel" id="typePanel">
+
+          <!-- FREE -->
+          <section class="type-section">
+            <h3 class="type-heading type-heading--free" data-i18n="free">Free</h3>
+            <div class="type-grid type-grid--free">
+              <!-- Operation (selected by default) -->
+              <button class="type-item selected" data-game="operation" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/operation_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/operation_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="operation">Operation</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- PREMIUM -->
+          <section class="type-section">
+            <h3 class="type-heading type-heading--premium" data-i18n="premium">Premium</h3>
+            <div class="type-grid type-grid--premium">
+              <!-- Time / Clock -->
+              <button class="type-item" data-game="time" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/time_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/time_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="time">Time</span>
+              </button>
+
+              <!-- Ruler -->
+              <button class="type-item" data-game="ruler" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/ruler_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/ruler_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="ruler">Ruler</span>
+              </button>
+
+              <!-- Column (Столбик) -->
+              <button class="type-item" data-game="column" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/column_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/column_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="column">Column</span>
+              </button>
+
+              <!-- Fractions -->
+              <button class="type-item" data-game="fraction" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/fraction_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/fraction_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="fraction">Fractions</span>
+              </button>
+
+              <!-- Perimeter / Area -->
+              <button class="type-item" data-game="perimeter" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/perimeter_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/perimeter_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="perimeter">Perimeter</span>
+              </button>
+
+              <!-- Sudoku -->
+              <button class="type-item" data-game="sudoku" type="button">
+                <span class="type-icon">
+                  <img class="icon-on"  src="assets/icons/sudoku_on.png"  alt="" />
+                  <img class="icon-off" src="assets/icons/sudoku_off.png" alt="" />
+                </span>
+                <span class="type-label" data-i18n="sudoku">Sudoku</span>
+              </button>
+            </div>
+          </section>
+
+        </div><!-- /type-panel -->
+
+        <!-- Custom scrollbar. The knob is a PNG you drop in assets/icons/,
+             and it sits OUTSIDE the panel on its own track. -->
+        <div class="type-scroll" id="typeScroll">
+          <button class="type-knob" id="typeKnob" type="button" aria-label="Scroll games">
+            <img src="assets/icons/scroll_knob.png" alt="" />
+          </button>
+        </div>
+
+      </div><!-- /type-wrap -->
+    </div>
+
   </main>
 
-  <!-- ===== Language selector ===== -->
+  <!-- ===== Language selector (bottom-left) ===== -->
   <footer class="langbar">
     <div class="lang-switch" id="langSwitch">
       <span class="bar">|</span>
@@ -60,11 +158,16 @@
     </div>
   </footer>
 
+
   <!-- 1) Rive runtime -->
   <script src="https://unpkg.com/@rive-app/canvas@2"></script>
   <!-- 2) shared language system -->
   <script src="js/i18n.js"></script>
   <!-- 3) this page's logic -->
   <script src="js/mini-games.js"></script>
+  <!-- premium gating (locks subscription games for free users) -->
+  <script type="module" src="js/premium.js"></script>
+  <!-- user menu (shows avatar + name when signed in) -->
+  <script type="module" src="js/user-menu.js"></script>
 </body>
 </html>

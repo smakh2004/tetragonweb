@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tetragon — Sudoku Battle</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<!-- data-mode="sudoku" tells game.js to run the SUDOKU game on this page -->
+<body class="game-page game-sudoku" data-mode="sudoku">
+
+  <!-- ===== Countdown overlay (3 - 2 - 1 - GO!) ===== -->
+  <div class="countdown" id="countdown">
+    <span class="countdown-text" id="countdownText">3</span>
+  </div>
+
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <a href="index.html" class="logo-home">
+      <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+    </a>
+    <span class="mini-title" data-i18n="mini">Mini Games</span>
+    <a class="download-app download-app--pink login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
+  </header>
+
+  <!-- ===== Game ===== -->
+  <main class="game-wrap">
+
+    <!-- ===== TEAM 1 (left) ===== -->
+    <section class="team-panel team1">
+      <div class="team-head" data-i18n="team1">1 TEAM</div>
+
+      <!-- SUDOKU MODE — grid filled by game.js -->
+      <div class="sudoku-mode">
+        <div class="col-title" data-i18n="fillBlanks">Fill in the blanks</div>
+        <div class="sudoku-grid" id="sudokuGrid1"></div>
+        <div class="pad" id="pad1"></div>
+      </div>
+
+      <button class="check-btn" id="check1" type="button" data-i18n="check">CHECK</button>
+    </section>
+
+    <!-- ===== CENTER ===== -->
+    <div class="center">
+      <div class="timer">
+        <canvas id="clock" class="clock"></canvas>
+        <span class="timer-text" id="timerText">3:00</span>
+      </div>
+
+      <div class="center-teams">
+        <div class="team-visual">
+          <canvas id="stars1" class="stars"></canvas>
+          <div class="score score-1" id="score1">0</div>
+          <canvas id="avatar1" class="game-avatar"></canvas>
+        </div>
+        <div class="team-visual">
+          <canvas id="stars2" class="stars"></canvas>
+          <div class="score score-2" id="score2">0</div>
+          <canvas id="avatar2" class="game-avatar"></canvas>
+        </div>
+      </div>
+
+      <div class="game-result" id="result" hidden>
+        <div class="result-title" id="resultTitle">1 TEAM WINS</div>
+        <button class="restart-btn" id="resultBtn" type="button" aria-label="Restart">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none"
+               stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <polyline points="21 3 21 9 15 9" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== TEAM 2 (right) ===== -->
+    <section class="team-panel team2">
+      <div class="team-head" data-i18n="team2">2 TEAM</div>
+
+      <!-- SUDOKU MODE — grid filled by game.js -->
+      <div class="sudoku-mode">
+        <div class="col-title" data-i18n="fillBlanks">Fill in the blanks</div>
+        <div class="sudoku-grid" id="sudokuGrid2"></div>
+        <div class="pad" id="pad2"></div>
+      </div>
+
+      <button class="check-btn" id="check2" type="button" data-i18n="check">CHECK</button>
+    </section>
+  </main>
+
+  <!-- ===== Language selector (bottom-left) ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- ===== Sound toggle (bottom-right) ===== -->
+  <div class="soundbar">
+    <button class="sound-btn" id="soundBtn" type="button" aria-label="Sound on/off" aria-pressed="true">
+      <svg class="ico-on" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+        <path d="M16 8.5a4 4 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <path d="M18.5 6a7.5 7.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <svg class="ico-off" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+        <line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- 1) Rive runtime -->
+  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
+  <!-- 2) shared language system -->
+  <script src="js/i18n.js"></script>
+  <!-- 3) sound effects -->
+  <script src="js/sound.js"></script>
+  <!-- 4) game logic (shared engine; runs in SUDOKU mode here) -->
+  <script src="js/game.js"></script>
+  <!-- premium gating (locks this game for free users) -->
+  <script type="module" src="js/premium.js"></script>
+  <!-- user menu (shows avatar + name when signed in) -->
+  <script type="module" src="js/user-menu.js"></script>
+</body>
+</html>

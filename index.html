@@ -22,10 +22,12 @@
   <!-- ===== Top bar ===== -->
   <header class="topbar">
     <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
-    <a class="download-app"
-       href="https://play.google.com/store/apps/details?id=com.tetragon.app"
-       target="_blank" rel="noopener noreferrer"
-       data-i18n="download">Download App</a>
+
+    <!-- Log In (uses your own icon image at assets/icons/login.png) -->
+    <a class="download-app login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
   </header>
 
   <!-- ===== Center hero ===== -->
@@ -63,5 +65,7 @@
   <script src="js/i18n.js"></script>
   <!-- 3) this page's animation -->
   <script src="js/script.js"></script>
+  <!-- user menu (shows avatar + name when signed in) -->
+  <script type="module" src="js/user-menu.js"></script>
 </body>
 </html>
