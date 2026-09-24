@@ -717,10 +717,11 @@ body {
   background: #fdfdfe;
   border: 3px solid #edf0f3;
   border-radius: 36px;
-  padding: clamp(14px, 1.6vw, 28px);
+  /* padding + gap shrink on short screens too */
+  padding: clamp(12px, min(1.6vw, 2vh), 28px);
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.4vw, 18px);
+  gap: clamp(8px, min(1.4vw, 1.6vh), 18px);
   width: auto;
   max-width: 460px;
   min-width: 280px;
