@@ -104,7 +104,10 @@ body {
 /* Middle content. Main size dials: .science font-size + .stage max-width */
 .stage {
   position: relative;
-  width: 100%;
+  /* Width is capped by BOTH the screen width and the available height, so on a
+     short (wide) screen the stage shrinks to fit instead of pushing the
+     "Mini Games" link (bottom of the stage) off the bottom edge. */
+  width: min(100%, calc((100vh - 200px) * 1000 / 560));
   max-width: 1350px;
   aspect-ratio: 1000 / 560;
 }
