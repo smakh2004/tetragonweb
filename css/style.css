@@ -1785,6 +1785,8 @@ body.game-sudoku .sudoku-grid {
   overflow-y: auto;
   overflow-x: hidden;
   align-content: center;   /* short puzzles stay centred, tall ones scroll */
+  /* breathing room so scrolling content isn't cramped against the scrollbar/edges */
+  padding: clamp(6px, 1.4vh, 14px) clamp(8px, 1.2vw, 16px);
 }
 
 /* one connected crossword grid: cells share borders, no gaps between them */
@@ -1804,7 +1806,7 @@ body.game-sudoku .sudoku-grid {
   --r: clamp(7px, 2.8cqw, 13px);          /* the "circular end" radius */
   /* height-aware: a tall crossword shrinks its cells so the whole panel
      (grid + numpad) fits the screen without cutting off the keypad */
-  --sz: clamp(18px, min(10.4cqw, 4.4vh), 46px);
+  --sz: clamp(15px, min(9.5cqw, 3.7vh), 42px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1812,7 +1814,7 @@ body.game-sudoku .sudoku-grid {
   width: var(--sz);
   height: var(--sz);                       /* width == height -> square */
   padding: 0;
-  font-size: clamp(11px, min(5.6cqw, 2.4vh), 26px);   /* fits the (smaller) box */
+  font-size: clamp(10px, min(5cqw, 2.1vh), 24px);   /* fits the (smaller) box */
   font-weight: 700;
   color: #3a4250;
   background: #fff;
