@@ -493,7 +493,7 @@ body {
   border-radius: 28px;
   padding: clamp(18px, 2vw, 30px);
   /* leave room below for the fixed language switcher */
-  max-height: min(64vh, 560px);
+  max-height: min(56vh, 520px);
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -772,7 +772,7 @@ body.game-column .calc-mode   { display: none; }
 body.game-column .column-mode { display: flex; }
 
 .col-title {
-  font-size: clamp(16px, 2.2cqw, 26px);
+  font-size: clamp(13px, min(2.2cqw, 2.6vh), 26px);
   font-weight: 700;
   color: #4a5260;
   text-align: center;
@@ -788,9 +788,9 @@ body.game-column .column-mode { display: flex; }
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: clamp(30px, 13cqw, 56px);
-  height: clamp(38px, 15cqw, 62px);
-  font-size: clamp(22px, 11cqw, 42px);
+  min-width: clamp(28px, 13cqw, 56px);
+  height: clamp(30px, min(15cqw, 8vh), 62px);
+  font-size: clamp(18px, min(11cqw, 5.6vh), 42px);
   font-weight: 700;
   color: #4a5260;
   box-sizing: border-box;
@@ -836,7 +836,7 @@ body.game-fraction .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 .frac-circle {
   width: 100%;
-  max-width: clamp(180px, 27vw, 300px);
+  max-width: clamp(140px, min(27vw, 34vh), 300px);
   aspect-ratio: 1 / 1;
   display: block;
   margin: 0 auto;
@@ -926,7 +926,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 .peri-shape {
   width: 100%;
-  max-width: clamp(190px, 28vw, 320px);
+  max-width: clamp(150px, min(28vw, 34vh), 320px);
   aspect-ratio: 1 / 1;
   display: block;
   margin: 0 auto;
@@ -1061,7 +1061,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 /* the interactive clock canvas — must accept drags (touch-action:none) */
 .clock-face {
   width: 100%;
-  max-width: clamp(200px, 22vw, 340px);
+  max-width: clamp(160px, min(22vw, 34vh), 340px);
   aspect-ratio: 1 / 1;
   display: block;
   margin: 0 auto;
@@ -1072,7 +1072,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 .check-btn {
   border: none;
   border-radius: 999px;
-  padding: clamp(10px, 1.2vw, 18px);
+  padding: clamp(8px, min(1.2vw, 1.5vh), 18px);
   font-family: inherit;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -1167,6 +1167,14 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 @media (max-height: 680px) {
   .stars      { width: clamp(120px, 26vh, 430px); }
   .game-avatar { width: clamp(130px, 30vh, 410px); }
+  /* let the game area be only as tall as its content and reserve less at the
+     bottom, so even very short screens keep everything above the language bar */
+  .game-wrap  { min-height: 0; padding-bottom: clamp(44px, 7vh, 64px); }
+  /* extra compression for the dense panels (column mode especially) */
+  .col-cell   { height: clamp(26px, 6.4vh, 62px); font-size: clamp(16px, 5vh, 42px); }
+  .key        { --key-h: clamp(26px, 5.4vh, 58px); }
+  /* shrink the round canvases (fraction pie, clock, perimeter shape) too */
+  .frac-circle, .peri-shape, .clock-face { max-width: clamp(110px, 26vh, 300px); }
 }
 
 /* ----- countdown overlay ----- */
