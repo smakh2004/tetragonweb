@@ -712,39 +712,23 @@ body {
 }
 
 /* ===== BATTLE / GAME PAGE: one-screen, no-scroll layout =====
-   The page becomes a fixed grid: top bar, then a row with the language (left)
-   + sound (right) controls ABOVE the game, then the game fills the rest.
-   Nothing is pinned to the bottom, so the game is fully visible and never
-   overlapped, and the page never scrolls. (Desktop/laptop only; phones keep
-   their own scrolling layout below.) */
+   The page fills exactly the viewport height and never scrolls: top bar on
+   top, the game fills the rest and is scaled to fit, and the language + sound
+   controls stay in the bottom corners with the game kept clear of them.
+   (Desktop/laptop only; phones keep their own scrolling layout below.) */
 @media (min-width: 1001px) {
   body.game-page {
     height: 100vh;
     overflow: hidden;
-    display: grid;
-    grid-template-rows: auto auto 1fr;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
   }
-  body.game-page .topbar { grid-row: 1; grid-column: 1 / -1; }
-
-  body.game-page .langbar {
-    grid-row: 2; grid-column: 1;
-    position: static; bottom: auto; left: auto;
-    justify-self: start; align-self: center;
-    margin: 2px 0 2px clamp(16px, 3vw, 40px);
-  }
-  body.game-page .soundbar {
-    grid-row: 2; grid-column: 2;
-    position: static; bottom: auto; right: auto;
-    justify-self: end; align-self: center;
-    margin: 2px clamp(16px, 3vw, 40px) 2px 0;
-  }
-
+  body.game-page .topbar { flex: 0 0 auto; }
   body.game-page .game-wrap {
-    grid-row: 3; grid-column: 1 / -1;
-    min-height: 0;                 /* fill the remaining row, don't force height */
-    height: 100%;
-    padding-bottom: clamp(10px, 1.5vh, 22px);
+    flex: 1 1 auto;
+    min-height: 0;
+    /* room at the bottom for the language / sound controls */
+    padding-bottom: clamp(52px, 7vh, 84px);
   }
 }
 
