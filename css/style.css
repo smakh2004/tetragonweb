@@ -410,9 +410,14 @@ body {
 /* ===== Avatar box (left column) ===== */
 .game-box {
   position: relative;
-  /* height-aware so the avatar + PLAY button fit on short laptop screens */
-  width: clamp(180px, min(32vw, 40vh), 440px);
+  /* big by default; height-aware so it still fits short laptop screens */
+  width: clamp(200px, min(38vw, 52vh), 520px);
   aspect-ratio: 1 / 1;
+}
+/* only on genuinely short screens: shrink so the PLAY button clears the
+   fixed language switcher (after the base rule so it wins) */
+@media (max-height: 680px) {
+  .game-box { width: clamp(160px, 40vh, 520px); }
 }
 
 .game-box .avatar {
