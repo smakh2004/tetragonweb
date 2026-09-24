@@ -1753,14 +1753,15 @@ body.game-sudoku .score { display: none; }
 .pad--sudoku .key--wide { grid-column: span 2; }
 
 /* give the (bigger) crossword more room + shrink the header & numpad a touch */
-body.game-sudoku .team-panel { padding: clamp(10px, 1.1vw, 16px); gap: clamp(8px, 1vw, 14px); }
+body.game-sudoku .team-panel { padding: clamp(8px, min(1.1vw, 1.4vh), 16px); gap: clamp(6px, min(1vw, 1.2vh), 14px); }
 body.game-sudoku .team-head {
   font-size: clamp(11px, 1.1vw, 15px);
-  padding: clamp(5px, 0.55vw, 8px);
+  padding: clamp(4px, min(0.55vw, 0.9vh), 8px);
 }
 body.game-sudoku .col-title { font-size: clamp(12px, 1.1vw, 16px); }
+body.game-sudoku .sudoku-mode { gap: clamp(6px, min(1.6vw, 1.4vh), 18px); }
 body.game-sudoku .key {
-  --key-h: clamp(30px, 3vw, 44px);
+  --key-h: clamp(22px, min(3vw, 3.8vh), 42px);
   font-size: clamp(13px, 1.3vw, 20px);
 }
 
@@ -1779,7 +1780,9 @@ body.game-sudoku .key {
    rounded only on the OUTER edge of the shape (radius set inline per cell). */
 .sdk-cell {
   --r: clamp(7px, 2.8cqw, 13px);          /* the "circular end" radius */
-  --sz: clamp(26px, 10.4cqw, 48px);       /* one fixed square size for EVERY cell */
+  /* height-aware: a tall crossword shrinks its cells so the whole panel
+     (grid + numpad) fits the screen without cutting off the keypad */
+  --sz: clamp(18px, min(10.4cqw, 4.4vh), 46px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1787,7 +1790,7 @@ body.game-sudoku .key {
   width: var(--sz);
   height: var(--sz);                       /* width == height -> square */
   padding: 0;
-  font-size: clamp(13px, 5.6cqw, 26px);    /* sized so 2 digits fit the box */
+  font-size: clamp(11px, min(5.6cqw, 2.4vh), 26px);   /* fits the (smaller) box */
   font-weight: 700;
   color: #3a4250;
   background: #fff;
