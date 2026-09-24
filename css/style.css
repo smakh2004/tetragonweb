@@ -1133,7 +1133,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* LARGE DISPLAY SIZES */
 .stars {
-  width: clamp(150px, min(18vw, 36vh), 380px);
+  width: clamp(170px, min(22vw, 44vh), 430px);
   height: auto;
   aspect-ratio: 370 / 132;
   display: block;
@@ -1147,12 +1147,20 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* LARGE DISPLAY SIZES */
 .game-avatar {
-  width: clamp(150px, min(16vw, 32vh), 360px);
+  width: clamp(170px, min(20vw, 40vh), 410px);
   height: auto;
   aspect-ratio: 300 / 330;
   display: block;
   margin-top: -6px;
   object-fit: contain;
+}
+
+/* Only on genuinely short screens: shrink stars/avatar so the center column
+   still clears the fixed language switcher (placed AFTER the base rules so it
+   wins). Normal-height screens keep the big sizes above. */
+@media (max-height: 680px) {
+  .stars      { width: clamp(120px, 26vh, 430px); }
+  .game-avatar { width: clamp(130px, 30vh, 410px); }
 }
 
 /* ----- countdown overlay ----- */
