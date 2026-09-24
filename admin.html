@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon — Admin</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+</head>
+<body class="admin-page">
+
+  <!-- while we check who you are -->
+  <div class="admin-loading" id="adminLoading">Loading…</div>
+
+  <!-- signed in but not an admin -->
+  <div class="admin-denied" id="adminDenied" hidden>
+    <h1>Not authorized</h1>
+    <p>This page is for the site owner only.</p>
+    <a class="admin-link" href="index.html">← Back to site</a>
+  </div>
+
+  <!-- the dashboard -->
+  <main class="admin-body" id="adminBody" hidden>
+    <header class="admin-top">
+      <div>
+        <h1 class="admin-title">Admin dashboard</h1>
+        <p class="admin-sub">Tetragon — live overview</p>
+      </div>
+      <div class="admin-actions">
+        <button class="admin-btn" id="refreshBtn" type="button">Refresh</button>
+        <button class="admin-btn admin-btn--ghost" id="signoutBtn" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Visits</div>
+        <div class="stat-value" id="visits">—</div>
+        <div class="stat-note">total browsing sessions</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Active users</div>
+        <div class="stat-value" id="active">—</div>
+        <div class="stat-note">seen in the last 5 min</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Total users</div>
+        <div class="stat-value" id="total">—</div>
+        <div class="stat-note">registered accounts</div>
+      </div>
+
+      <div class="stat-card stat-card--money">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value" id="revenue">—</div>
+        <div class="stat-note"><span id="subs">0</span> active subscriptions</div>
+      </div>
+    </section>
+
+    <p class="admin-updated">Updated: <span id="updated">—</span></p>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
