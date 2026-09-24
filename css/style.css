@@ -1765,6 +1765,26 @@ body.game-sudoku .key {
   font-size: clamp(13px, 1.3vw, 20px);
 }
 
+/* Keep the sudoku panel inside the screen and scroll ONLY the crossword grid
+   inside it — the title and keypad stay put, the page never scrolls. This
+   handles very tall (cross-shaped) puzzles that can't shrink enough to fit. */
+body.game-sudoku .team-panel { max-height: 100%; overflow: hidden; }
+body.game-sudoku .sudoku-mode {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+body.game-sudoku .col-title,
+body.game-sudoku .pad { flex: 0 0 auto; }
+body.game-sudoku .sudoku-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-content: center;   /* short puzzles stay centred, tall ones scroll */
+}
+
 /* one connected crossword grid: cells share borders, no gaps between them */
 .sudoku-grid {
   display: grid;
