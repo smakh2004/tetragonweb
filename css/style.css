@@ -1784,9 +1784,19 @@ body.game-sudoku .sudoku-grid {
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  align-content: center;   /* short puzzles stay centred, tall ones scroll */
-  /* breathing room so scrolling content isn't cramped against the scrollbar/edges */
-  padding: clamp(6px, 1.4vh, 14px) clamp(8px, 1.2vw, 16px);
+  align-content: safe center;   /* centre short puzzles; top-align tall ones so
+                                   the first rows stay reachable when scrolling */
+  /* breathing room so scrolling content isn't cramped against the scrollbar/edges;
+     larger top/bottom so a long puzzle has space above the first and below the
+     last row when it scrolls */
+  padding: clamp(14px, 2.6vh, 30px) clamp(8px, 1.2vw, 16px);
+}
+/* a spacer after the last row guarantees bottom space even while scrolling
+   (some browsers drop a scroll container's padding-bottom) */
+body.game-sudoku .sudoku-grid::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: clamp(6px, 1.4vh, 16px);
 }
 
 /* one connected crossword grid: cells share borders, no gaps between them */
