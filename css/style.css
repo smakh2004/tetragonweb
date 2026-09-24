@@ -1764,6 +1764,8 @@ body.game-sudoku .key {
   --key-h: clamp(22px, min(3vw, 3.8vh), 42px);
   font-size: clamp(13px, 1.3vw, 20px);
 }
+/* smaller buttons -> smaller gaps between them */
+body.game-sudoku .pad { gap: clamp(3px, min(0.8vw, 1.1vh), 12px); }
 
 /* Keep the sudoku panel inside the screen and scroll ONLY the crossword grid
    inside it — the title and keypad stay put, the page never scrolls. This
