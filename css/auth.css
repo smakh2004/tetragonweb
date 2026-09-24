@@ -37,9 +37,11 @@ body.auth-page {
 }
 .auth-rive {
   position: absolute;
-  inset: 7%;            /* a little smaller than the panel (light bg shows around it) */
-  width: auto;
-  height: auto;
+  inset: 0;             /* fill the whole panel; a <canvas> is a replaced element,
+                          so it needs explicit width/height (not just insets) or it
+                          collapses to its tiny default size in the corner */
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
