@@ -1599,17 +1599,14 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 @media (max-width: 600px) {
   .user-name, .user-caret { display: none; }
   .user-btn { gap: 0; padding: 4px; }
-  /* Let the title flow BETWEEN the logo and avatar (instead of absolutely
-     centered on top of them), and shrink it, so it can't overlap the logo. */
+  /* a bit smaller logo on phones */
+  .logo { height: clamp(10px, 2.4vw, 15px); }
+  /* keep the title centered on the PAGE (absolute), nudged a touch left so it
+     looks visually centered against the wider logo; small enough to clear both */
   .mini-title {
-    position: static;
-    transform: none;
-    left: auto; top: auto;
-    flex: 1 1 auto;
-    min-width: 0;
-    text-align: center;
-    margin: 0 8px;
     font-size: clamp(10px, 2.7vw, 14px);
+    max-width: 56vw;
+    transform: translate(calc(-50% - 12px), -50%);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
