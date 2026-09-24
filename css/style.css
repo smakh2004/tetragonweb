@@ -1609,7 +1609,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
     min-width: 0;
     text-align: center;
     margin: 0 8px;
-    font-size: clamp(12px, 3.4vw, 16px);
+    font-size: clamp(10px, 2.7vw, 14px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
