@@ -411,7 +411,7 @@ body {
 .game-box {
   position: relative;
   /* big by default; height-aware so it still fits short laptop screens */
-  width: clamp(200px, min(38vw, 52vh), 520px);
+  width: clamp(200px, min(34vw, 46vh), 500px);
   aspect-ratio: 1 / 1;
 }
 /* only on genuinely short screens: shrink so the PLAY button clears the
@@ -682,8 +682,8 @@ body {
   .type-scroll { flex-basis: 58px; width: 58px; }
   .type-knob   { width: 58px; height: 58px; }
 
-  /* left column stays balanced */
-  .game-box { width: clamp(400px, 28vw, 520px); }
+  /* left column stays balanced (height-aware so it clears the langbar) */
+  .game-box { width: clamp(280px, min(28vw, 46vh), 520px); }
   .type-scroll::before { width: 12px; }
   .diff-btn { font-size: 19px; padding: 12px 28px; }
   .play-btn { font-size: 24px; padding: 18px clamp(80px, 8vw, 110px); }
