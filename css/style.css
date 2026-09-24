@@ -1599,6 +1599,8 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 @media (max-width: 600px) {
   .user-name, .user-caret { display: none; }
   .user-btn { gap: 0; padding: 4px; }
+  /* shrink the centered title so it doesn't overlap the logo / avatar */
+  .mini-title { font-size: clamp(12px, 3vw, 17px); max-width: 52vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 
 .user-dropdown {
