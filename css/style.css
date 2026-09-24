@@ -793,7 +793,7 @@ body.game-column .calc-mode   { display: none; }
 body.game-column .column-mode { display: flex; }
 
 .col-title {
-  font-size: clamp(13px, min(2.2cqw, 2.6vh), 26px);
+  font-size: clamp(16px, min(6cqw, 3vh), 26px);
   font-weight: 700;
   color: #4a5260;
   text-align: center;
@@ -809,15 +809,21 @@ body.game-column .column-mode { display: flex; }
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: clamp(28px, 13cqw, 56px);
-  height: clamp(30px, min(15cqw, 8vh), 62px);
-  font-size: clamp(18px, min(11cqw, 5.6vh), 42px);
+  min-width: clamp(26px, 11cqw, 48px);
+  height: clamp(28px, min(13cqw, 7vh), 54px);
+  font-size: clamp(16px, min(9.5cqw, 5vh), 38px);
   font-weight: 700;
   color: #4a5260;
   box-sizing: border-box;
 }
 .col-sign { color: #8a93a0; }
 .col-line { height: 3px; background: #cfd6dd; border-radius: 2px; margin: 4px 0; }
+
+/* column mode: slightly smaller keypad buttons */
+body.game-column .key {
+  --key-h: clamp(26px, min(3.3vw, 5.2vh), 52px);
+  font-size: clamp(14px, 1.4vw, 22px);
+}
 
 /* a blank cell the player fills */
 .col-box {
