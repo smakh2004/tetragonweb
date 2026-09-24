@@ -408,7 +408,8 @@ body {
 /* ===== Avatar box (left column) ===== */
 .game-box {
   position: relative;
-  width: clamp(280px, 32vw, 440px);
+  /* height-aware so the avatar + PLAY button fit on short laptop screens */
+  width: clamp(180px, min(32vw, 40vh), 440px);
   aspect-ratio: 1 / 1;
 }
 
@@ -954,7 +955,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* typed-number display — pill, gray fill, WITH stroke */
 .display {
-  height: clamp(42px, 4vw, 60px);
+  height: clamp(34px, min(4vw, 6.4vh), 60px);
   border-radius: 999px;
   background: #eef1f4;
   border: 3px solid #e2e7ec;
@@ -976,7 +977,8 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* Flatter pill keys */
 .key {
-  --key-h: clamp(40px, 3.8vw, 58px);
+  /* height-aware: shrinks on short screens (min of width- and height-based) */
+  --key-h: clamp(28px, min(3.8vw, 6vh), 58px);
   height: var(--key-h);
   padding: 0;
   border: 3px solid #eef1f4;
@@ -1126,7 +1128,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* LARGE DISPLAY SIZES */
 .stars {
-  width: clamp(160px, 18vw, 380px);
+  width: clamp(110px, min(18vw, 19vh), 380px);
   height: auto;
   aspect-ratio: 370 / 132;
   display: block;
@@ -1140,7 +1142,7 @@ body.game-perimeter .team-panel { gap: clamp(6px, 1vw, 12px); }
 
 /* LARGE DISPLAY SIZES */
 .game-avatar {
-  width: clamp(160px, 16vw, 360px);
+  width: clamp(120px, min(16vw, 21vh), 360px);
   height: auto;
   aspect-ratio: 300 / 330;
   display: block;
