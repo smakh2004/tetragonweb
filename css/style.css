@@ -377,7 +377,9 @@ body {
   justify-content: center;
   gap: clamp(20px, 4vw, 64px);
   min-height: calc(100vh - 170px);
-  padding: 20px clamp(16px, 4vw, 56px);
+  /* extra bottom space keeps the PLAY button + panel clear of the fixed
+     language switcher pinned at the bottom-left */
+  padding: 20px clamp(16px, 4vw, 56px) clamp(76px, 10vh, 120px);
   box-sizing: border-box;
 }
 
@@ -485,7 +487,8 @@ body {
   border: 3px solid #edf0f3;
   border-radius: 28px;
   padding: clamp(18px, 2vw, 30px);
-  max-height: min(72vh, 600px);
+  /* leave room below for the fixed language switcher */
+  max-height: min(64vh, 560px);
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
