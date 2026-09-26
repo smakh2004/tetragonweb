@@ -25,7 +25,7 @@ try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 const CLICK_SERVICE_ID = "112479";
 const CLICK_MERCHANT_ID = "64974";
 // price per plan in so'm — MUST match PLANS in functions/index.js and the page
-const PLAN_PRICE = { start: 29000, plus: 69000, pro: 199000 };
+const PLAN_PRICE = { start: 39000, plus: 79000, pro: 299000 };
 
 let currentUser = null;
 let authReady = false;
