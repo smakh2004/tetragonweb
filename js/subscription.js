@@ -12,7 +12,7 @@ import {
   getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, collection, onSnapshot, serverTimestamp,
+  getFirestore, doc, getDoc, onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -25,7 +25,7 @@ try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 const CLICK_SERVICE_ID = "112479";
 const CLICK_MERCHANT_ID = "64974";
 // price per plan in so'm — MUST match PLANS in functions/index.js and the page
-const PLAN_PRICE = { start: 19000, plus: 49000, pro: 149000 };
+const PLAN_PRICE = { start: 29000, plus: 69000, pro: 199000 };
 
 let currentUser = null;
 let authReady = false;
@@ -65,6 +65,7 @@ function watchForActivation(uid, prevStamp) {
 async function choosePlan(btn, payTab) {
   await whenAuthReady();
 
+  // not signed in -> close the blank tab and send them to log in
   if (!currentUser) {
     if (payTab) { try { payTab.close(); } catch (e) {} }
     window.location.href = "login.html";
@@ -72,35 +73,24 @@ async function choosePlan(btn, payTab) {
   }
 
   const plan = btn.dataset.plan || "start";
-  const amount = Math.round(Number(PLAN_PRICE[plan] || PLAN_PRICE.start));
-
-  // Create a short-lived order doc; Click's transaction_param has a length
-  // limit, so we pass only this doc's short auto-ID instead of encoding
-  // uid+plan directly into the URL.
-  const orderRef = doc(collection(db, "click_orders"));
-  await setDoc(orderRef, {
-    uid: currentUser.uid,
-    plan,
-    amount,
-    status: "created",
-    created: serverTimestamp(),
-  });
-
-  const transParam = orderRef.id;
+  const amount = PLAN_PRICE[plan] || PLAN_PRICE.start;
+  const transParam = currentUser.uid + "." + plan;   // clickComplete reads "uid.plan"
 
   const url = "https://my.click.uz/services/pay/"
             + "?service_id=" + CLICK_SERVICE_ID
             + "&merchant_id=" + CLICK_MERCHANT_ID
             + "&amount=" + amount
-            + "&transaction_param=" + encodeURIComponent(transParam)
-            + "&merchant_trans_id=" + encodeURIComponent(transParam);
+            + "&transaction_param=" + encodeURIComponent(transParam);
 
+  // remember the current payment stamp so we only react to a NEW one (renewals too)
   let prevStamp = "";
   try { prevStamp = paidStamp((await getDoc(doc(db, "users", currentUser.uid))).data()); } catch (e) {}
 
+  // send the pre-opened tab to Click (opening it earlier avoids popup blockers)
   if (payTab) payTab.location.href = url;
   else window.open(url, "_blank");
 
+  // this tab waits for the payment, then opens the account page
   watchForActivation(currentUser.uid, prevStamp);
 }
 

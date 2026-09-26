@@ -9,14 +9,10 @@ import {
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, setDoc, serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig, AFTER_AUTH_REDIRECT } from "./firebase-config.js";
 
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db   = getFirestore(app);
 // keep the user signed in across page reloads
 try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
@@ -69,27 +65,6 @@ function setBusy(busy) {
   [submitBtn, googleBtn].forEach((b) => { if (b) b.disabled = busy; });
   if (submitBtn) submitBtn.classList.toggle("busy", busy);
 }
-
-// create users/{uid} the first time we see this account; never overwrite
-// an existing doc (so we never clobber an active subscription)
-async function ensureUserDoc(user) {
-  if (!user) return;
-  try {
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) {
-      await setDoc(ref, {
-        email: user.email || "",
-        displayName: user.displayName || "",
-        subscription: "free",
-        createdAt: serverTimestamp(),
-      });
-    }
-  } catch (e) {
-    console.error("ensureUserDoc failed:", e);
-  }
-}
-
 function goNext() {
   // remember we're signed in so the next page hides "Log In" instantly (no flash)
   try { localStorage.setItem("tetragon_signed_in", "1"); } catch (e) {}
@@ -122,13 +97,11 @@ if (form) {
 
     setBusy(true);
     try {
-      let cred;
       if (MODE === "signup") {
-        cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await createUserWithEmailAndPassword(auth, email, pass);
       } else {
-        cred = await signInWithEmailAndPassword(auth, email, pass);
+        await signInWithEmailAndPassword(auth, email, pass);
       }
-      await ensureUserDoc(cred.user);
       goNext();
     } catch (err) {
       showError(friendly(err.code));
@@ -144,8 +117,7 @@ if (googleBtn) {
     showError("");
     setBusy(true);
     try {
-      const cred = await signInWithPopup(auth, provider);
-      await ensureUserDoc(cred.user);
+      await signInWithPopup(auth, provider);
       goNext();
     } catch (err) {
       showError(friendly(err.code));

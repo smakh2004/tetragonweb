@@ -333,7 +333,7 @@ const translations = {
     areaLabel: "Yuza",
     perimeterLabel: "Perimetr",
     showOnRuler: "Javobni chizg'ichda ko'rsat",
-    cmUnit: "cm",
+    cmUnit: "sm",
     showTime: "Vaqtni ko'rsat",
     hourOne: "soat",   hourFew: "soat",   hourMany: "soat",
     minOne: "daqiqa",  minFew: "daqiqa",  minMany: "daqiqa",
