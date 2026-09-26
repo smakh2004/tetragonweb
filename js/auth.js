@@ -1,9 +1,8 @@
 /* =====================================================
-   TETRAGON — AUTH (Firebase: email/password + Google)
+   TETRAGON — AUTH (js/auth.js)
    Shared by login.html and signup.html.
-   The page tells us which mode via <body data-auth="login|signup">.
 ===================================================== */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, setPersistence, browserLocalPersistence,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
@@ -14,16 +13,16 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig, AFTER_AUTH_REDIRECT } from "./firebase-config.js";
 
-const app  = initializeApp(firebaseConfig);
+const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// keep the user signed in across page reloads
+// Keep the user signed in across page reloads
 try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
 const MODE = document.body.dataset.auth === "signup" ? "signup" : "login";
 
-// ---------- elements ----------
+// ---------- DOM Elements ----------
 const form      = document.getElementById("authForm");
 const emailEl   = document.getElementById("email");
 const passEl    = document.getElementById("password");
@@ -33,8 +32,8 @@ const googleBtn = document.getElementById("googleBtn");
 const errorEl   = document.getElementById("authError");
 const forgotBtn = document.getElementById("forgotBtn");
 
-// ---------- helpers ----------
-// Ensure the user exists in Firestore as soon as they sign up or log in
+// ---------- User Creation Helper ----------
+// Automatically guarantees a user document in Firestore on signup/login
 async function ensureUserDoc(user) {
   if (!user || !user.uid) return;
   try {
@@ -48,15 +47,15 @@ async function ensureUserDoc(user) {
   }
 }
 
-// translate a key via the shared language system; fall back to English text
+// Translate error keys or fallback
 function t(key, fallback) {
   try {
     const v = window.getText && window.getText(key);
     return (v && v !== key) ? v : fallback;
   } catch (e) { return fallback; }
 }
+
 function friendly(code) {
-  // map Firebase error codes -> i18n keys + English fallback
   const map = {
     "auth/invalid-email":          ["errInvalidEmail", "That email doesn't look right."],
     "auth/missing-email":          ["errEnterEmail",   "Enter your email."],
@@ -75,22 +74,24 @@ function friendly(code) {
   const pair = map[code] || ["errGeneric", "Something went wrong. Please try again."];
   return t(pair[0], pair[1]);
 }
+
 function showError(msg) {
   if (!errorEl) return;
   errorEl.textContent = msg;
   errorEl.hidden = !msg;
 }
+
 function setBusy(busy) {
   [submitBtn, googleBtn].forEach((b) => { if (b) b.disabled = busy; });
   if (submitBtn) submitBtn.classList.toggle("busy", busy);
 }
+
 function goNext() {
-  // remember we're signed in so the next page hides "Log In" instantly (no flash)
   try { localStorage.setItem("tetragon_signed_in", "1"); } catch (e) {}
   window.location.href = AFTER_AUTH_REDIRECT;
 }
 
-// ---------- show / hide password ----------
+// ---------- Password Toggle ----------
 if (showBtn && passEl) {
   const syncShowLabel = () => {
     const shown = passEl.type === "text";
@@ -100,11 +101,10 @@ if (showBtn && passEl) {
     passEl.type = passEl.type === "password" ? "text" : "password";
     syncShowLabel();
   });
-  // keep the right word ("Show"/"Hide") when the language changes
   document.addEventListener("languagechange", syncShowLabel);
 }
 
-// ---------- email + password submit ----------
+// ---------- Form Submission ----------
 if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -131,7 +131,7 @@ if (form) {
   });
 }
 
-// ---------- Google ----------
+// ---------- Google Authentication ----------
 if (googleBtn) {
   const provider = new GoogleAuthProvider();
   googleBtn.addEventListener("click", async () => {
@@ -148,7 +148,7 @@ if (googleBtn) {
   });
 }
 
-// ---------- Forgot password (login page) ----------
+// ---------- Forgot Password ----------
 if (forgotBtn) {
   forgotBtn.addEventListener("click", async () => {
     showError("");
@@ -163,10 +163,10 @@ if (forgotBtn) {
   });
 }
 
-// ---------- Left-panel Rive animation (mr_square_auth.riv, Fit.Cover) ----------
+// ---------- Canvas Animation (mr_square_auth.riv) ----------
 (function initAuthRive() {
   const canvas = document.getElementById("authRive");
-  if (!canvas || !window.rive) return;   // runtime loaded via the <script> tag on the page
+  if (!canvas || !window.rive) return;
   const r = new window.rive.Rive({
     src: "rive/mr_square_auth.riv",
     canvas: canvas,
@@ -174,7 +174,7 @@ if (forgotBtn) {
     autoplay: true,
     autoBind: true,
     layout: new window.rive.Layout({
-      fit: window.rive.Fit.Cover,          // fill the whole panel, cropping as needed
+      fit: window.rive.Fit.Cover,
       alignment: window.rive.Alignment.Center,
     }),
     onLoad: () => r.resizeDrawingSurfaceToCanvas(),
