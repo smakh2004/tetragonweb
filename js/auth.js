@@ -9,10 +9,15 @@ import {
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig, AFTER_AUTH_REDIRECT } from "./firebase-config.js";
 
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db   = getFirestore(app);
+
 // keep the user signed in across page reloads
 try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
@@ -29,6 +34,20 @@ const errorEl   = document.getElementById("authError");
 const forgotBtn = document.getElementById("forgotBtn");
 
 // ---------- helpers ----------
+// Ensure the user exists in Firestore as soon as they sign up or log in
+async function ensureUserDoc(user) {
+  if (!user || !user.uid) return;
+  try {
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email || "",
+      subscription: "free",
+      createdAt: serverTimestamp(),
+    }, { merge: true });
+  } catch (err) {
+    console.error("Failed to create Firestore user doc:", err);
+  }
+}
+
 // translate a key via the shared language system; fall back to English text
 function t(key, fallback) {
   try {
@@ -97,11 +116,13 @@ if (form) {
 
     setBusy(true);
     try {
+      let cred;
       if (MODE === "signup") {
-        await createUserWithEmailAndPassword(auth, email, pass);
+        cred = await createUserWithEmailAndPassword(auth, email, pass);
       } else {
-        await signInWithEmailAndPassword(auth, email, pass);
+        cred = await signInWithEmailAndPassword(auth, email, pass);
       }
+      await ensureUserDoc(cred.user);
       goNext();
     } catch (err) {
       showError(friendly(err.code));
@@ -117,7 +138,8 @@ if (googleBtn) {
     showError("");
     setBusy(true);
     try {
-      await signInWithPopup(auth, provider);
+      const cred = await signInWithPopup(auth, provider);
+      await ensureUserDoc(cred.user);
       goNext();
     } catch (err) {
       showError(friendly(err.code));
