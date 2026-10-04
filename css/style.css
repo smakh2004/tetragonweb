@@ -2388,11 +2388,17 @@ body.game-sudoku .sudoku-grid::after {
 }
 .quiz-opt:hover { background: #f5f7f9; }
 .quiz-opt:active { transform: translateY(1px); }
-.team1 .quiz-opt.selected { border-color: var(--team1); background: #ffecec; color: #c0393a; }
+/* both teams use the SAME blue highlight when an option is selected */
+.team1 .quiz-opt.selected,
 .team2 .quiz-opt.selected { border-color: var(--team2); background: #eaf7fd; color: #1676a0; }
 .quiz-opt.correct { border-color: #12a969; background: #e3f9ee; color: #12a969; }
 .quiz-opt.wrong   { border-color: #e5484d; background: #ffe3e3; color: #d0342c; }
 body.game-quiz .calc-mode { display: none; }
+
+/* quiz: more rounded team containers + option buttons */
+body.game-quiz .team-panel { border-radius: 44px; }
+body.game-quiz .quiz-opt   { border-radius: 22px; }
+body.game-quiz .team-head  { border-radius: 999px; }
 
 /* a team that has answered every question -> show its final score */
 .quiz-done {
