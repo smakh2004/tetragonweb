@@ -59,6 +59,10 @@ body {
   height: 100vh;
   z-index: 2;
   display: block;
+  /* the background animation must NOT intercept clicks, or its full-screen
+     canvas swallows every tap meant for the links beneath it (e.g. the
+     "create lessons" / "Mini Games" labels). It's decorative only. */
+  pointer-events: none;
 }
 
 /* ===== Top bar (responsive) ===== */
@@ -1889,3 +1893,513 @@ body.game-sudoku .sudoku-grid::after {
 
 /* empty hole between separate equations — no cell, no border */
 .sdk-gap { border: 0; background: transparent; }
+
+/* =====================================================
+   LESSON GAMES FEATURE
+   lessons.html  (mini-games-style tile panel)
+   lesson-edit.html  (name + questions editor)
+   quiz.html  (2-team battle — quiz card)
+   Reuses tokens --cyan, --team1, --team2 and the .mini-page /
+   .topbar / .play-btn / .team-panel / .check-btn styles.
+===================================================== */
+
+/* ---------- top-bar label / link on the main page ---------- */
+.lesson-create-link { cursor: pointer; }
+
+/* "create lessons" on the home hero replaces the old "always learn" label.
+   It reuses .label-always for position/size, so this only adds link behavior. */
+.label-lessons {
+  position: absolute;      /* ensure z-index applies even if class order shifts */
+  z-index: 4;              /* sit ABOVE the hero canvas (z-index 2) */
+  pointer-events: auto;    /* always clickable */
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.label-lessons:hover { opacity: 0.85; }
+.label-lessons:active { transform: translateY(2px) scale(0.97); }
+
+/* =====================================================
+   LESSONS PAGE (lessons.html)
+   Same frame as mini-games: avatar + PLAY left, panel right.
+===================================================== */
+
+/* PLAY disabled until a lesson is chosen */
+.play-btn.is-disabled {
+  background: #cfd6dd;
+  cursor: default;
+}
+.play-btn.is-disabled:active { transform: none; }
+
+/* the panel reuses .type-panel; this just positions its contents */
+.lessons-panel {
+  position: relative;      /* so the bin can sit inside it */
+}
+
+/* loading / signed-out states inside the panel */
+.lessons-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 180px;
+  text-align: center;
+  color: #8a93a0;
+  font-weight: 600;
+  padding: 24px;
+}
+.lesson-signin-btn {
+  display: inline-block;
+  background: var(--cyan);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 10px 26px;
+  border-radius: 999px;
+}
+
+/* the grid of lesson tiles + the Add-lesson tile */
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, clamp(100px, 13vw, 150px));
+  gap: clamp(16px, 2vw, 28px);
+  justify-content: start;
+  align-content: start;
+}
+
+/* one lesson tile: numbered square on top, name below */
+.lesson-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: grab;
+  touch-action: none;      /* let pointer drags work on touch */
+  user-select: none;
+}
+.lesson-tile.dragging { opacity: 0.35; }
+
+.lesson-num {
+  width: clamp(84px, 10vw, 128px);
+  aspect-ratio: 1 / 1;
+  border: 3px solid #e4e8ec;
+  background: #fff;
+  border-radius: 26px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: clamp(30px, 4vw, 52px);
+  color: #c2c8cf;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  box-sizing: border-box;
+}
+.lesson-tile:active .lesson-num { transform: scale(0.97); }
+
+.lesson-name {
+  font-weight: 600;
+  font-size: clamp(12px, 1.2vw, 16px);
+  color: #9aa3ad;
+  text-align: center;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* chosen lesson: blue outline + blue number + name */
+.lesson-tile.chosen .lesson-num { border-color: var(--cyan); color: var(--cyan); }
+.lesson-tile.chosen .lesson-name { color: var(--cyan); }
+
+/* pen edit button — only on the chosen tile, top-right of the square */
+.lesson-pen {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cyan);
+  color: #fff;
+  cursor: pointer;
+  display: none;              /* hidden until chosen */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(41,193,240,0.4);
+  z-index: 2;
+}
+.lesson-tile.chosen .lesson-pen { display: inline-flex; }
+.lesson-pen:active { transform: scale(0.92); }
+
+/* Add-lesson tile: a dashed + square with a label (same footprint as a tile) */
+.lesson-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+.lesson-add-plus {
+  width: clamp(84px, 10vw, 128px);
+  aspect-ratio: 1 / 1;
+  border-radius: 26px;
+  background: #eef1f4;
+  color: #aeb6c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+.lesson-add:hover .lesson-add-plus { background: #e6eaee; }
+.lesson-add:active .lesson-add-plus { transform: scale(0.96); }
+.lesson-add .lesson-add-label {
+  font-weight: 600;
+  font-size: clamp(12px, 1.2vw, 16px);
+  color: #9aa3ad;
+  text-align: center;
+}
+
+/* locked (free limit reached): gradient square + "Obuna bo'lish" */
+.lesson-add.is-locked .lesson-add-plus,
+.lesson-add.is-locked {
+  /* the whole locked tile becomes one gradient pill-square */
+}
+.lesson-add.is-locked {
+  width: clamp(84px, 10vw, 128px);
+  min-height: clamp(110px, 13vw, 160px);
+  border-radius: 26px;
+  background: linear-gradient(135deg, #ffd23f 0%, #b06bff 100%);
+  padding: 14px 10px;
+  justify-content: center;
+}
+.lesson-add.is-locked .lesson-add-label {
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(12px, 1.2vw, 15px);
+}
+
+/* the floating clone that follows the finger while dragging */
+.drag-ghost {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.04);
+  opacity: 0.92;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+  border-radius: 26px;
+}
+
+/* DELETE bin — pinned bottom-left of the panel, only while dragging */
+.lesson-bin {
+  position: absolute;
+  left: clamp(14px, 2vw, 26px);
+  bottom: clamp(14px, 2vw, 26px);
+  width: clamp(72px, 8vw, 96px);
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+  background: #fff4f7;
+  color: var(--team1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  z-index: 5;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.18s ease, transform 0.18s ease, background 0.15s ease;
+  pointer-events: none;
+}
+.lesson-bin.visible { opacity: 1; transform: scale(1); }
+.lesson-bin.over {
+  background: var(--team1);
+  color: #fff;
+  transform: scale(1.12);
+}
+.lesson-bin-text {
+  font-weight: 800;
+  font-size: clamp(10px, 1vw, 13px);
+  letter-spacing: 0.03em;
+}
+
+/* =====================================================
+   CREATE / EDIT LESSON (lesson-edit.html)  — matches image 3
+===================================================== */
+.edit-main {
+  min-height: calc(100vh - 140px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(10px, 3vh, 30px) clamp(14px, 4vw, 48px) clamp(80px, 10vh, 120px);
+  box-sizing: border-box;
+}
+.edit-state { color: #8a93a0; font-weight: 600; padding: 60px 0; text-align: center; }
+.edit-state a { margin-top: 10px; }
+
+.edit-card-wrap {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2vh, 22px);
+}
+
+/* the rounded outlined card holding name + questions */
+.edit-card {
+  width: 100%;
+  background: #fdfdfe;
+  border: 3px solid #edf0f3;
+  border-radius: 28px;
+  padding: clamp(16px, 2.4vw, 26px);
+  box-sizing: border-box;
+}
+
+/* inner scroll area so long lessons scroll inside the card */
+.edit-scroll {
+  max-height: min(64vh, 560px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+.edit-scroll::-webkit-scrollbar { width: 8px; }
+.edit-scroll::-webkit-scrollbar-thumb { background: #e2e7ec; border-radius: 999px; }
+
+/* "Lesson name" */
+.edit-name-label {
+  display: block;
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(15px, 1.6vw, 19px);
+  color: var(--indigo-soft);
+  margin-bottom: 10px;
+}
+.edit-name-input {
+  width: 100%;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 15px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #23262b;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: clamp(14px, 2vh, 20px);
+  transition: border-color 0.15s ease;
+}
+.edit-name-input:focus { border-color: var(--cyan); }
+
+/* one question block (the inner rounded box in image 3) */
+.q-block {
+  border: 3px solid #eef1f4;
+  border-radius: 18px;
+  padding: clamp(12px, 1.8vw, 18px);
+  margin-bottom: clamp(12px, 1.8vh, 18px);
+}
+.q-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.q-title {
+  font-weight: 700;
+  font-size: clamp(14px, 1.4vw, 17px);
+  color: var(--cyan);
+}
+.q-del {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--team1);
+}
+.q-del:hover { opacity: 0.8; }
+
+.q-text-input {
+  width: 100%;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #23262b;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  transition: border-color 0.15s ease;
+}
+.q-text-input:focus { border-color: var(--cyan); }
+
+/* an option row: letter + radio + input */
+.q-opt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.q-opt-row:last-child { margin-bottom: 0; }
+
+.q-opt-letter {
+  font-weight: 800;
+  font-size: clamp(15px, 1.5vw, 18px);
+  color: #c2c8cf;
+  width: 16px;
+  text-align: center;
+  flex: 0 0 auto;
+  transition: color 0.15s ease;
+}
+.q-opt-letter.active { color: var(--cyan); }
+
+/* custom radio dot */
+.q-opt-radio { position: relative; flex: 0 0 auto; cursor: pointer; width: 20px; height: 20px; }
+.q-opt-radio input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.q-opt-dot {
+  display: block;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 3px solid #d3d9e2;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.q-opt-radio input:checked + .q-opt-dot {
+  border-color: var(--cyan);
+  background: radial-gradient(circle at center, var(--cyan) 0 5px, #fff 6px 100%);
+}
+
+.q-opt-input {
+  flex: 1;
+  min-width: 0;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #23262b;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+.q-opt-input:focus { border-color: var(--cyan); }
+
+/* Add question — full-width outline pill */
+.edit-addq-btn {
+  width: 100%;
+  border: 3px solid var(--cyan);
+  background: #fff;
+  color: var(--cyan);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: clamp(14px, 1.4vw, 17px);
+  padding: 12px;
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+.edit-addq-btn:hover { background: #eaf7fd; }
+.edit-addq-btn.is-disabled {
+  border-color: #e2e7ec;
+  color: #c2c8cf;
+  cursor: default;
+  background: #fff;
+}
+
+.edit-msg { margin-top: 12px; font-size: 14px; color: var(--team1); font-weight: 600; text-align: center; }
+.edit-msg.ok { color: #12a969; }
+.edit-msg[hidden] { display: none; }
+
+/* Create lesson / Save — cyan pill below the card */
+.edit-create-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: clamp(15px, 1.6vw, 19px);
+  color: #fff;
+  background: var(--cyan);
+  padding: 15px clamp(60px, 10vw, 110px);
+  border-radius: 999px;
+  transition: filter 0.15s ease, transform 0.12s ease;
+}
+.edit-create-btn:hover { filter: brightness(1.05); }
+.edit-create-btn:active { transform: translateY(1px); }
+.edit-create-btn.busy { opacity: 0.65; cursor: default; }
+
+/* =====================================================
+   QUIZ BATTLE (quiz.html) — per-team question card
+===================================================== */
+.quiz-mode { display: flex; flex-direction: column; gap: clamp(10px, 1.6vw, 18px); }
+
+.quiz-question {
+  font-size: clamp(16px, 5.5cqw, 28px);
+  font-weight: 700;
+  color: #4a5260;
+  line-height: 1.25;
+  text-align: center;
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1vw, 12px) 4px;
+}
+.quiz-options { display: flex; flex-direction: column; gap: clamp(8px, 1.2vw, 12px); }
+.quiz-opt {
+  width: 100%;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 16px;
+  padding: clamp(11px, 1.6vw, 16px) clamp(12px, 1.8vw, 18px);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: clamp(14px, 1.5vw, 19px);
+  color: #3a4250;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.12s ease, background 0.12s ease, transform 0.1s ease;
+  box-sizing: border-box;
+  word-break: break-word;
+}
+.quiz-opt:hover { background: #f5f7f9; }
+.quiz-opt:active { transform: translateY(1px); }
+.team1 .quiz-opt.selected { border-color: var(--team1); background: #ffecec; color: #c0393a; }
+.team2 .quiz-opt.selected { border-color: var(--team2); background: #eaf7fd; color: #1676a0; }
+.quiz-opt.correct { border-color: #12a969; background: #e3f9ee; color: #12a969; }
+.quiz-opt.wrong   { border-color: #e5484d; background: #ffe3e3; color: #d0342c; }
+body.game-quiz .calc-mode { display: none; }
+
+/* =====================================================
+   RESPONSIVE (<= 1000px) for the lesson feature
+===================================================== */
+@media (max-width: 1000px) {
+  /* lessons page: the panel stacks under the avatar (inherits mini-main rules) */
+  .lessons-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lesson-num,
+  .lesson-add-plus { width: 100%; max-width: 120px; }
+  .lesson-add.is-locked { width: 100%; max-width: 120px; margin: 0 auto; }
+  /* the bin: keep it reachable while dragging on phones */
+  .lesson-bin { left: 14px; bottom: 14px; }
+
+  /* quiz battle card on phones */
+  .quiz-question { font-size: clamp(13px, 3.4cqw, 18px); min-height: 2em; }
+  .quiz-opt { padding: 9px 10px; font-size: clamp(12px, 3cqw, 15px); border-width: 2px; border-radius: 12px; }
+  .quiz-options { gap: 6px; }
+
+  /* editor card fills the screen width */
+  .edit-card-wrap { max-width: 100%; }
+}

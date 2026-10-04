@@ -17,8 +17,12 @@ const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// Keep the user signed in across page reloads
-try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
+// Keep the user signed in across page reloads.
+// IMPORTANT: this is NOT a top-level await. A top-level `await` here would
+// delay (or, on some setups, block) everything below it — so the form &
+// button handlers wouldn't attach and clicking would appear to do nothing.
+// Setting persistence is best-effort and does not need to block the page.
+setPersistence(auth, browserLocalPersistence).catch(() => {});
 
 const MODE = document.body.dataset.auth === "signup" ? "signup" : "login";
 
@@ -86,9 +90,18 @@ function setBusy(busy) {
   if (submitBtn) submitBtn.classList.toggle("busy", busy);
 }
 
+// Where to go after a successful auth. If the page was reached with a
+// ?next=<page> (e.g. from the lessons flow), honor it; otherwise use the
+// configured default (index.html). This keeps "log in -> back to lessons".
 function goNext() {
   try { localStorage.setItem("tetragon_signed_in", "1"); } catch (e) {}
-  window.location.href = AFTER_AUTH_REDIRECT;
+  let dest = AFTER_AUTH_REDIRECT;
+  try {
+    const next = new URLSearchParams(location.search).get("next");
+    // only allow same-site relative targets (no http://, no //) for safety
+    if (next && !/^https?:|^\/\//i.test(next)) dest = next;
+  } catch (e) {}
+  window.location.href = dest;
 }
 
 // ---------- Password Toggle ----------
