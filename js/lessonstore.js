@@ -120,14 +120,22 @@ export async function isPremiumAsync(uid) {
 
 // All lessons owned by this teacher, in CREATION order (oldest first) so the
 // 1, 2, 3 numbering on the tiles stays stable as new lessons are added.
+//
+// NOTE: we filter by ownerId ONLY (no orderBy in the query). Combining
+// where() + orderBy() on different fields forces Firestore to need a composite
+// index, which otherwise throws "The query requires an index". We sort by
+// createdAt in JS instead, so no index is ever needed.
 export async function listGames(uid) {
-  const q = query(
-    collection(db, "lessonGames"),
-    where("ownerId", "==", uid),
-    orderBy("createdAt", "asc")
-  );
+  const q = query(collection(db, "lessonGames"), where("ownerId", "==", uid));
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  const games = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  // sort oldest-first by createdAt (Firestore Timestamp -> millis; missing = 0)
+  games.sort((a, b) => {
+    const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+    const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+    return ta - tb;
+  });
+  return games;
 }
 
 // How many lessons this teacher already has (for the free-limit check).
@@ -144,13 +152,12 @@ export async function getGame(gameId) {
 }
 
 // All questions in a lesson, in their saved order.
+// Sorted in JS by the `order` field (no query orderBy -> no index needed).
 export async function listQuestions(gameId) {
-  const q = query(
-    collection(db, "lessonGames", gameId, "questions"),
-    orderBy("order", "asc")
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  const snap = await getDocs(collection(db, "lessonGames", gameId, "questions"));
+  const qs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  qs.sort((a, b) => (a.order || 0) - (b.order || 0));
+  return qs;
 }
 
 // Count questions in a lesson (for list badges).
