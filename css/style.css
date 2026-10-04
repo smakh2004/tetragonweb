@@ -2104,8 +2104,8 @@ body.game-sudoku .sudoku-grid::after {
   border-radius: 26px;
 }
 
-/* DELETE bin — ALWAYS visible, pinned bottom-left of the panel (like the
-   mockup). Brightens while a lesson is dragged over it. */
+/* DELETE bin — appears ONLY while dragging a lesson, pinned bottom-left of
+   the panel. Brightens while a lesson is dragged over it. */
 .lesson-bin {
   position: absolute;
   left: clamp(16px, 2.2vw, 30px);
@@ -2113,7 +2113,7 @@ body.game-sudoku .sudoku-grid::after {
   width: clamp(72px, 8vw, 100px);
   aspect-ratio: 1 / 1;
   border-radius: 22px;
-  background: var(--team1);          /* solid red bin, matching the mockup */
+  background: var(--team1);          /* solid red bin */
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -2121,13 +2121,12 @@ body.game-sudoku .sudoku-grid::after {
   justify-content: center;
   gap: 4px;
   z-index: 5;
-  opacity: 1;                        /* always shown */
-  transform: scale(1);
-  transition: transform 0.18s ease, filter 0.15s ease;
+  opacity: 0;                        /* hidden until a drag starts */
+  transform: scale(0.85);
+  transition: opacity 0.18s ease, transform 0.18s ease, filter 0.15s ease;
   pointer-events: none;             /* drop detection is by coordinates in JS */
 }
-/* kept for compatibility: JS toggles .visible while dragging — no-op now */
-.lesson-bin.visible { opacity: 1; transform: scale(1); }
+.lesson-bin.visible { opacity: 1; transform: scale(1); }   /* shown while dragging */
 .lesson-bin.over {
   filter: brightness(1.08);
   transform: scale(1.12);

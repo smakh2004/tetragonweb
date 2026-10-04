@@ -242,7 +242,7 @@ function enableDrag(tile, id) {
   });
 
   function startDrag(ev) {
-    // the bin is always visible; just mark the drag state
+    // reveal the DELETE bin for the duration of the drag
     if (bin) bin.classList.add("visible");
     tile.classList.add("dragging");
     // a floating clone follows the pointer
@@ -261,7 +261,7 @@ function enableDrag(tile, id) {
   }
 
   function overBin(ev) {
-    if (!bin) return false;
+    if (!bin || !bin.classList.contains("visible")) return false;
     const r = bin.getBoundingClientRect();
     return ev.clientX >= r.left && ev.clientX <= r.right &&
            ev.clientY >= r.top  && ev.clientY <= r.bottom;
