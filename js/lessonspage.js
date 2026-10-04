@@ -138,7 +138,7 @@ function renderGrid() {
       '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
     pen.addEventListener("click", (e) => {
       e.stopPropagation();
-      window.location.href = "lesson-edit.html?game=" + encodeURIComponent(g.id);
+      window.location.href = "createlesson.html?game=" + encodeURIComponent(g.id);
     });
     tile.appendChild(pen);
 
@@ -166,7 +166,7 @@ function renderGrid() {
       '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor"' +
       ' stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>' +
       '<span class="lesson-add-label">' + T("addLesson") + "</span>";
-    add.addEventListener("click", () => { window.location.href = "lesson-edit.html"; });
+    add.addEventListener("click", () => { window.location.href = "createlesson.html"; });
   }
   grid.appendChild(add);
 }
