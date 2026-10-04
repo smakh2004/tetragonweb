@@ -14,7 +14,7 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="css/style.css?v=30" />
+  <link rel="stylesheet" href="css/style.css?v=31" />
 </head>
 <!-- data-mode="quiz" -> quiz.js runs the teacher-questions battle here -->
 <body class="game-page game-quiz" data-mode="quiz">
@@ -26,7 +26,7 @@
 
   <!-- ===== Top bar ===== -->
   <header class="topbar">
-    <a href="lessons.html" class="logo-home">
+    <a href="index.html" class="logo-home">
       <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
     </a>
     <span class="mini-title" id="gameTitle"></span>
@@ -121,10 +121,8 @@
   <script src="https://unpkg.com/@rive-app/canvas@2"></script>
   <!-- 2) shared language system -->
   <script src="js/i18n.js?v=5"></script>
-  <!-- 3) sound effects (same engine as game.js) -->
-  <script src="js/sound.js"></script>
-  <!-- 4) quiz battle logic (module: loads questions from Firestore) -->
-  <script type="module" src="js/lessonquiz3.js"></script>
+  <!-- 3) quiz battle logic + built-in Web Audio sound (no external files) -->
+  <script type="module" src="js/lessonquiz4.js"></script>
   <!-- user menu -->
   <script type="module" src="js/user-menu.js"></script>
 </body>
