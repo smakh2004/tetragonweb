@@ -242,8 +242,8 @@ function enableDrag(tile, id) {
   });
 
   function startDrag(ev) {
-    show(bin, true);
-    bin.classList.add("visible");
+    // the bin is always visible; just mark the drag state
+    if (bin) bin.classList.add("visible");
     tile.classList.add("dragging");
     // a floating clone follows the pointer
     ghost = tile.cloneNode(true);
@@ -261,7 +261,7 @@ function enableDrag(tile, id) {
   }
 
   function overBin(ev) {
-    if (bin.hidden) return false;
+    if (!bin) return false;
     const r = bin.getBoundingClientRect();
     return ev.clientX >= r.left && ev.clientX <= r.right &&
            ev.clientY >= r.top  && ev.clientY <= r.bottom;
@@ -275,8 +275,7 @@ function enableDrag(tile, id) {
     const dropOnBin = overBin(ev);
     if (ghost) { ghost.remove(); ghost = null; }
     tile.classList.remove("dragging");
-    bin.classList.remove("visible", "over");
-    show(bin, false);
+    if (bin) bin.classList.remove("visible", "over");   // keep the bin visible
 
     if (dropOnBin) {
       if (confirm(T("confirmDeleteGame"))) {

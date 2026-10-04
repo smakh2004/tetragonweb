@@ -1933,7 +1933,10 @@ body.game-sudoku .sudoku-grid::after {
 
 /* the panel reuses .type-panel; this just positions its contents */
 .lessons-panel {
-  position: relative;      /* so the bin can sit inside it */
+  position: relative;               /* so the bin can sit inside it */
+  min-height: clamp(360px, 54vh, 520px);   /* big tall card like the mockup */
+  min-width: clamp(300px, 34vw, 460px);    /* generous card width (not hugging tiles) */
+  box-sizing: border-box;
 }
 
 /* loading / signed-out states inside the panel */
@@ -1966,6 +1969,9 @@ body.game-sudoku .sudoku-grid::after {
   gap: clamp(16px, 2vw, 28px);
   justify-content: start;
   align-content: start;
+  /* leave room at the bottom-left for the always-visible DELETE bin so tiles
+     never sit on top of it */
+  padding-bottom: clamp(96px, 14vh, 130px);
 }
 
 /* one lesson tile: numbered square on top, name below */
@@ -2098,31 +2104,32 @@ body.game-sudoku .sudoku-grid::after {
   border-radius: 26px;
 }
 
-/* DELETE bin — pinned bottom-left of the panel, only while dragging */
+/* DELETE bin — ALWAYS visible, pinned bottom-left of the panel (like the
+   mockup). Brightens while a lesson is dragged over it. */
 .lesson-bin {
   position: absolute;
-  left: clamp(14px, 2vw, 26px);
-  bottom: clamp(14px, 2vw, 26px);
-  width: clamp(72px, 8vw, 96px);
+  left: clamp(16px, 2.2vw, 30px);
+  bottom: clamp(16px, 2.2vw, 30px);
+  width: clamp(72px, 8vw, 100px);
   aspect-ratio: 1 / 1;
   border-radius: 22px;
-  background: #fff4f7;
-  color: var(--team1);
+  background: var(--team1);          /* solid red bin, matching the mockup */
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
   z-index: 5;
-  opacity: 0;
-  transform: scale(0.85);
-  transition: opacity 0.18s ease, transform 0.18s ease, background 0.15s ease;
-  pointer-events: none;
+  opacity: 1;                        /* always shown */
+  transform: scale(1);
+  transition: transform 0.18s ease, filter 0.15s ease;
+  pointer-events: none;             /* drop detection is by coordinates in JS */
 }
+/* kept for compatibility: JS toggles .visible while dragging — no-op now */
 .lesson-bin.visible { opacity: 1; transform: scale(1); }
 .lesson-bin.over {
-  background: var(--team1);
-  color: #fff;
+  filter: brightness(1.08);
   transform: scale(1.12);
 }
 .lesson-bin-text {
