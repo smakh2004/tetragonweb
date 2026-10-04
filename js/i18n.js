@@ -160,6 +160,7 @@ const translations = {
     deleteWord: "Delete",
     saveFailed: "Couldn't save. Try again.",
     needName: "Enter a lesson name.",
+    finishedLabel: "correct",
   },
   ru: {
     download: "Скачать",
@@ -307,6 +308,7 @@ const translations = {
     deleteWord: "Удалить",
     saveFailed: "Не удалось сохранить. Попробуйте снова.",
     needName: "Введите название урока.",
+    finishedLabel: "правильно",
   },
   uz: {
     download: "Yuklab olish",
@@ -454,6 +456,7 @@ const translations = {
     deleteWord: "O'chirish",
     saveFailed: "Saqlab bo'lmadi. Qayta urining.",
     needName: "Dars nomini kiriting.",
+    finishedLabel: "to'g'ri",
   },
 };
 
