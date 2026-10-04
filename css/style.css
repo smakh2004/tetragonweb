@@ -2374,7 +2374,8 @@ body.game-sudoku .sudoku-grid::after {
   width: 100%;
   border: 3px solid #eef1f4;
   background: #fff;
-  border-radius: 999px;          /* full pill, same as the CHECK button */
+  /* corner roundness scales with screen size (smaller screen = less round) */
+  border-radius: clamp(12px, 2.2vw, 999px);
   padding: clamp(8px, min(1.2vw, 1.5vh), 18px) clamp(12px, 1.8vw, 18px);  /* match CHECK height */
   font-family: inherit;
   font-weight: 700;
@@ -2396,8 +2397,10 @@ body.game-sudoku .sudoku-grid::after {
 body.game-quiz .calc-mode { display: none; }
 
 /* quiz: more rounded team containers */
-body.game-quiz .team-panel { border-radius: 44px; }
-body.game-quiz .team-head  { border-radius: 999px; }
+/* panel + head + check-button roundness scale down on smaller screens */
+body.game-quiz .team-panel { border-radius: clamp(20px, 3.2vw, 44px); }
+body.game-quiz .team-head  { border-radius: clamp(14px, 2.4vw, 999px); }
+body.game-quiz .check-btn  { border-radius: clamp(12px, 2.2vw, 999px); }
 /* option buttons are full pills (set on .quiz-opt above) */
 
 /* a team that has answered every question -> show its final score */
@@ -2437,9 +2440,9 @@ body.game-quiz .team-head  { border-radius: 999px; }
   /* the bin: keep it reachable while dragging on phones */
   .lesson-bin { left: 14px; bottom: 14px; }
 
-  /* quiz battle card on phones */
+  /* quiz battle card on phones (radius handled by the clamp on .quiz-opt) */
   .quiz-question { font-size: clamp(13px, 3.4cqw, 18px); min-height: 2em; }
-  .quiz-opt { padding: 9px 10px; font-size: clamp(12px, 3cqw, 15px); border-width: 2px; border-radius: 12px; }
+  .quiz-opt { padding: 9px 10px; font-size: clamp(12px, 3cqw, 15px); border-width: 2px; }
   .quiz-options { gap: 6px; }
 
   /* editor card fills the screen width */
