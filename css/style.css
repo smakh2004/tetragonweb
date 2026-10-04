@@ -352,6 +352,11 @@ body {
   font-weight: 700;
   color: var(--indigo-soft);
   white-space: nowrap;
+  /* keep the centered title clear of the logo (left) and the Download/Done
+     link (right) so a long lesson name never overlaps them */
+  max-width: min(46vw, 460px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* pink "Download App" / "Log In" (this page only) */
