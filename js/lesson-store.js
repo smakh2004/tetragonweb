@@ -61,12 +61,29 @@ export const FREE_MAX_QUESTIONS = 10;  // free teachers: up to 10 questions per 
 
 /* ---------- AUTH ---------- */
 
-// Resolve the currently signed-in user once (waits for Firebase to decide).
+// Resolve the currently signed-in user, AFTER Firebase has finished restoring
+// the persisted session.
+//
+// IMPORTANT: onAuthStateChanged fires its FIRST callback with `null` on page
+// load, before the saved (browserLocalPersistence) session is restored — then
+// fires again with the real user a moment later. Resolving on that first null
+// is why a signed-in teacher wrongly saw "please log in".
+//
+// auth.authStateReady() (Firebase SDK v10.1+) resolves only once the initial
+// auth state is settled, so auth.currentUser is then accurate. We fall back to
+// a "skip the first null" listener for older SDKs just in case.
 export function currentUser() {
+  if (typeof auth.authStateReady === "function") {
+    return auth.authStateReady().then(() => auth.currentUser || null);
+  }
+  // Fallback: wait for the first NON-null user, or for the state to settle.
   return new Promise((resolve) => {
+    let settled = false;
+    const finish = (u) => { if (settled) return; settled = true; try { unsub(); } catch (e) {} resolve(u || null); };
     const unsub = onAuthStateChanged(auth, (user) => {
-      unsub();
-      resolve(user || null);
+      if (user) finish(user);              // got the real user -> done
+      // if null on the very first tick, wait briefly for a possible restore
+      else setTimeout(() => finish(auth.currentUser), 400);
     });
   });
 }

@@ -18,7 +18,7 @@ import {
   currentUser, isPremiumAsync,
   getGame, listQuestions, createLesson, updateLesson,
   FREE_MAX_QUESTIONS, FREE_MAX_GAMES,
-} from "./lesson-store.js?v=3";
+} from "./lesson-store.js?v=4";
 
 const T = (k) => (window.getText ? window.getText(k) : k);
 function show(el, on = true) { if (el) el.hidden = !on; }

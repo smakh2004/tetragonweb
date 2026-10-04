@@ -23,7 +23,7 @@
    ===================================================== */
 import {
   getGame, listQuestions,
-} from "./lesson-store.js?v=3";
+} from "./lesson-store.js?v=4";
 
 /* ---------- SAFE SOUND WRAPPERS (same pattern as game.js) ---------- */
 function sfx(name)    { try { if (window.Sound) window.Sound.play(name); } catch (e) {} }
