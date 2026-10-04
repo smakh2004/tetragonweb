@@ -1992,9 +1992,17 @@ body.game-sudoku .sudoku-grid::after {
 }
 .lesson-tile.dragging { opacity: 0.35; }
 
-.lesson-num {
+/* square wrapper holds the number + the corner pen; sizing lives here so the
+   pen can hug the square's corner regardless of the lesson name width */
+.lesson-sq {
+  position: relative;
   width: clamp(84px, 10vw, 128px);
   aspect-ratio: 1 / 1;
+}
+
+.lesson-num {
+  width: 100%;
+  height: 100%;
   border: 3px solid #e4e8ec;
   background: #fff;
   border-radius: 26px;
@@ -2026,22 +2034,29 @@ body.game-sudoku .sudoku-grid::after {
 .lesson-tile.chosen .lesson-num { border-color: var(--cyan); color: var(--cyan); }
 .lesson-tile.chosen .lesson-name { color: var(--cyan); }
 
-/* pen edit button — only on the chosen tile, top-right of the square */
+/* pen edit button — only on the chosen tile, stuck to the square's top-right
+   corner. Shows YOUR own PNG (assets/icons/edit.png); no drawn circle so the
+   image appears exactly as designed. */
 .lesson-pen {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 30px; height: 30px;
-  border-radius: 50%;
+  top: -10px;
+  right: -10px;
+  width: 34px; height: 34px;
+  padding: 0;
   border: none;
-  background: var(--cyan);
-  color: #fff;
+  background: none;
   cursor: pointer;
   display: none;              /* hidden until chosen */
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(41,193,240,0.4);
   z-index: 2;
+}
+.lesson-pen-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;      /* taps register on the button, not the image */
 }
 .lesson-tile.chosen .lesson-pen { display: inline-flex; }
 .lesson-pen:active { transform: scale(0.92); }
@@ -2434,7 +2449,7 @@ body.game-quiz .check-btn  { border-radius: clamp(12px, 2.2vw, 999px); }
 @media (max-width: 1000px) {
   /* lessons page: the panel stacks under the avatar (inherits mini-main rules) */
   .lessons-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lesson-num,
+  .lesson-sq,
   .lesson-add-plus { width: 100%; max-width: 120px; }
   .lesson-add.is-locked { width: 100%; max-width: 120px; margin: 0 auto; }
   /* the bin: keep it reachable while dragging on phones */
