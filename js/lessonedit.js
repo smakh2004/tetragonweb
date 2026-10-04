@@ -59,33 +59,41 @@ async function boot() {
     return;
   }
   console.log("[lesson-edit] signed in as", user.uid);
+  // SIGNED IN: hide the loading + signed-out panels and show the editor NOW,
+  // before any Firestore calls (so a slow/failed read can't leave them visible).
   show(signedOut, false);
+  show(loadingEl, false);
+  show(editWrap, true);
   uid = user.uid;
-  premium = await isPremiumAsync(uid);
+
+  try { premium = await isPremiumAsync(uid); } catch (e) { premium = false; }
 
   const params = new URLSearchParams(location.search);
   gameId = params.get("game");
 
   if (gameId) {
-    const game = await getGame(gameId);
-    if (game) {
-      nameInput.value = game.title || "";
-      const qs = await listQuestions(gameId).catch(() => []);
-      questions = qs.map((q) => ({
-        text: q.text || "",
-        options: (q.options && q.options.slice(0, 3)) || ["", "", ""],
-        correct: typeof q.correct === "number" ? q.correct : 0,
-      }));
-      createBtn.textContent = T("saveWord");   // editing -> "Save"
-    } else {
+    try {
+      const game = await getGame(gameId);
+      if (game) {
+        nameInput.value = game.title || "";
+        const qs = await listQuestions(gameId).catch(() => []);
+        questions = qs.map((q) => ({
+          text: q.text || "",
+          options: (q.options && q.options.slice(0, 3)) || ["", "", ""],
+          correct: typeof q.correct === "number" ? q.correct : 0,
+        }));
+        createBtn.textContent = T("saveWord");   // editing -> "Save"
+      } else {
+        gameId = null;
+      }
+    } catch (e) {
+      console.error("load lesson for edit failed:", e);
       gameId = null;
     }
   }
 
   if (questions.length === 0) questions.push(blankQuestion());
 
-  show(loadingEl, false);
-  show(editWrap, true);
   renderQuestions();
   updateAddBtn();
 }
