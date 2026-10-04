@@ -2374,8 +2374,8 @@ body.game-sudoku .sudoku-grid::after {
   width: 100%;
   border: 3px solid #eef1f4;
   background: #fff;
-  border-radius: 16px;
-  padding: clamp(11px, 1.6vw, 16px) clamp(12px, 1.8vw, 18px);
+  border-radius: 999px;          /* full pill, same as the CHECK button */
+  padding: clamp(8px, min(1.2vw, 1.5vh), 18px) clamp(12px, 1.8vw, 18px);  /* match CHECK height */
   font-family: inherit;
   font-weight: 700;
   font-size: clamp(14px, 1.5vw, 19px);
@@ -2395,10 +2395,10 @@ body.game-sudoku .sudoku-grid::after {
 .quiz-opt.wrong   { border-color: #e5484d; background: #ffe3e3; color: #d0342c; }
 body.game-quiz .calc-mode { display: none; }
 
-/* quiz: more rounded team containers + option buttons */
+/* quiz: more rounded team containers */
 body.game-quiz .team-panel { border-radius: 44px; }
-body.game-quiz .quiz-opt   { border-radius: 22px; }
 body.game-quiz .team-head  { border-radius: 999px; }
+/* option buttons are full pills (set on .quiz-opt above) */
 
 /* a team that has answered every question -> show its final score */
 .quiz-done {
