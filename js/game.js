@@ -322,7 +322,7 @@ function initClock(team) {
 
 /* ---------- LOAD INTERACTIVE RULER (ruler mode) ----------
    Tries a couple of filename spellings so it loads whichever file you have. */
-const RULER_SRCS = ["rive/ruller.riv", "rive/ruler.riv"];
+const RULER_SRCS = ["rive/ruler.riv", "rive/ruller.riv"];
 
 function loadRuler(team) {
   let idx = 0;
