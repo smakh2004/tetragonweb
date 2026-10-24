@@ -16,7 +16,8 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="css/style.css?v=31" />
+  <link rel="stylesheet" href="css/style.css?v=32" />
+  <link rel="stylesheet" href="css/groups.css?v=1" />
 </head>
 <body data-role="student">
   <!-- ===== Top bar ===== -->
@@ -30,8 +31,25 @@
     </a>
   </header>
 
-  <!-- ===== Student home (empty for now) ===== -->
-  <main class="hero"></main>
+  <!-- ===== Student home: join a group + my groups ===== -->
+  <main class="gp-main">
+    <h1 class="gp-h1" data-i18n="myGroups">My Groups</h1>
+
+    <section class="gp-card" style="margin-top:14px">
+      <h2 class="gp-h2" data-i18n="joinGroup">Join a group</h2>
+      <form class="gp-form" id="joinForm">
+        <input class="gp-input gp-input--code" id="joinCode" type="text" maxlength="12"
+               autocomplete="off" autocapitalize="characters" spellcheck="false"
+               placeholder="Group ID" data-i18n-placeholder="phGroupId" />
+        <button class="gp-btn" id="joinBtn" type="submit" data-i18n="joinWord">Join</button>
+      </form>
+      <p class="gp-msg" id="msg" hidden></p>
+    </section>
+
+    <div class="gp-list" id="groupList">
+      <p class="gp-loading" data-i18n="loadingWord">Loading…</p>
+    </div>
+  </main>
 
   <!-- ===== Language selector (collapsed by default) ===== -->
   <footer class="langbar">
@@ -43,9 +61,10 @@
   </footer>
 
   <!-- shared language system -->
-  <script src="js/i18n.js"></script>
+  <script src="js/i18n.js?v=6"></script>
   <!-- only students stay on this page -->
   <script type="module" src="js/role-guard.js"></script>
+  <script type="module" src="js/student.js"></script>
   <!-- user menu (shows avatar + name when signed in) -->
   <script type="module" src="js/user-menu.js"></script>
 </body>

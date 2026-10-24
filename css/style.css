@@ -2485,3 +2485,21 @@ body.game-quiz .check-btn  { border-radius: clamp(12px, 2.2vw, 999px); }
   transition: background 0.15s ease;
 }
 .register-btn:hover { background: #14171b; }
+
+/* "My groups" on the teacher home stage (mirrors "Mini Games", bottom-left) */
+.label-groups {
+  position: absolute;
+  bottom: 11%;
+  left: 8%;
+  z-index: 3;
+  font-size: clamp(16px, 2.2vw, 44px);
+  font-weight: 600;
+  color: var(--indigo-soft);
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease;
+  will-change: transform;
+}
+.label-groups:hover { opacity: 0.85; }
+.label-groups:active { transform: translateY(3px) scale(0.96); opacity: 0.7; }

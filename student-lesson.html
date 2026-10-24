@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon — Lesson</title>
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css?v=32" />
+  <link rel="stylesheet" href="css/groups.css?v=1" />
+</head>
+<body data-role="student">
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <a href="index.html" class="logo-home">
+      <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+    </a>
+    <a class="download-app download-app--pink login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
+  </header>
+
+  <p class="gp-loading" id="loading" data-i18n="loadingWord">Loading…</p>
+
+  <main class="gp-main" id="notFound" hidden>
+    <a class="gp-back" href="student.html" data-i18n="backGroups">← My Groups</a>
+    <p class="gp-empty" data-i18n="lessonNotFound">Lesson not found.</p>
+  </main>
+
+  <main class="gp-main" id="page" hidden>
+    <a class="gp-back" id="backLink" href="#">← <span id="backName"></span></a>
+
+    <!-- before starting -->
+    <section class="gp-card qp-intro" id="intro" hidden>
+      <h1 class="gp-h1" id="introTitle"></h1>
+      <div class="qp-stats">
+        <div class="qp-stat"><b id="statQ"></b><span data-i18n="questionsWord">questions</span></div>
+        <div class="qp-stat"><b id="statPts"></b><span data-i18n="pointsWord">points</span></div>
+        <div class="qp-stat"><b id="statTime"></b><span data-i18n="timeWord">time</span></div>
+      </div>
+      <p class="gp-sub" style="margin-top:16px" data-i18n="onceWarning">You can take this lesson only once. Each question has its own timer — when it runs out, the question counts as wrong.</p>
+      <button class="gp-btn" id="startBtn" type="button" data-i18n="startWord">Start</button>
+      <p class="gp-msg" id="introMsg" hidden></p>
+    </section>
+
+    <!-- playing -->
+    <section class="gp-card" id="play" hidden>
+      <div class="qp-top">
+        <span id="qpProgress"></span>
+        <span class="qp-timer" id="qpTimer"></span>
+        <span id="qpPoints"></span>
+      </div>
+      <div class="qp-bar"><div class="qp-bar-fill" id="qpBar"></div></div>
+      <div class="qp-question" id="qpQuestion"></div>
+      <div class="qp-options" id="qpOptions"></div>
+      <p class="qp-feedback" id="qpFeedback"></p>
+    </section>
+
+    <!-- finished -->
+    <section id="result" hidden>
+      <div class="gp-card qp-intro">
+        <h1 class="gp-h1" id="resultTitle"></h1>
+        <div class="qp-score-big" id="resultScore"></div>
+        <p class="gp-sub" id="resultCorrect"></p>
+        <p class="qp-rank" id="resultRank"></p>
+      </div>
+      <h2 class="gp-h2" data-i18n="leaderboard">Leaderboard</h2>
+      <div id="board"></div>
+    </section>
+  </main>
+
+  <!-- ===== Language selector (bottom-left) ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js?v=6"></script>
+  <script type="module" src="js/role-guard.js"></script>
+  <script type="module" src="js/student-lesson.js"></script>
+  <script type="module" src="js/user-menu.js"></script>
+</body>
+</html>

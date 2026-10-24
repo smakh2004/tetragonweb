@@ -1,0 +1,305 @@
+/* =====================================================
+   GROUPS — teacher groups, student groups, group lessons
+   Loaded after style.css (reuses its tokens, top bar, language bar
+   and the lesson editor's .edit-* / .q-* blocks).
+===================================================== */
+.gp-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(8px, 2vh, 24px) 16px clamp(90px, 12vh, 130px);
+  box-sizing: border-box;
+}
+.gp-main[hidden] { display: none; }
+
+.gp-card {
+  background: #fdfdfe;
+  border: 3px solid #edf0f3;
+  border-radius: 24px;
+  padding: clamp(16px, 2.4vw, 26px);
+  margin-bottom: 18px;
+  box-sizing: border-box;
+}
+
+.gp-h1 {
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  color: #23262b;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+.gp-h2 {
+  font-size: clamp(16px, 1.6vw, 19px);
+  font-weight: 700;
+  color: var(--indigo-soft);
+  margin-bottom: 12px;
+}
+.gp-sub { color: #8a93a0; font-size: 14px; font-weight: 500; }
+.gp-back {
+  display: inline-block;
+  color: var(--indigo-soft);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+.gp-back:hover { opacity: 0.8; }
+
+/* input + button row */
+.gp-form { display: flex; gap: 10px; flex-wrap: wrap; }
+.gp-input {
+  flex: 1 1 200px;
+  min-width: 0;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 15px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #23262b;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+.gp-input:focus { border-color: var(--cyan); }
+.gp-input--code { text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; }
+
+.gp-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+  background: var(--cyan);
+  padding: 12px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: filter 0.15s ease, transform 0.12s ease;
+}
+.gp-btn:hover { filter: brightness(1.05); }
+.gp-btn:active { transform: translateY(1px); }
+.gp-btn:disabled, .gp-btn.busy { opacity: 0.6; cursor: default; }
+.gp-btn--ghost { background: #fff; color: var(--cyan); box-shadow: inset 0 0 0 3px var(--cyan); }
+.gp-btn--ghost:hover { background: #eaf7fd; filter: none; }
+.gp-btn--danger { background: #fff; color: var(--team1); box-shadow: inset 0 0 0 3px #ffd9d9; }
+.gp-btn--danger:hover { background: #fff5f5; filter: none; }
+.gp-btn--sm { padding: 8px 14px; font-size: 13px; }
+
+.gp-msg { margin-top: 10px; font-size: 14px; font-weight: 600; color: var(--team1); }
+.gp-msg.ok { color: #12a969; }
+.gp-msg[hidden] { display: none; }
+.gp-empty { color: #8a93a0; font-weight: 600; padding: 18px 0; text-align: center; }
+.gp-loading { color: #8a93a0; font-weight: 600; padding: 60px 0; text-align: center; }
+
+/* group ID badge */
+.gp-code {
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+  background: #eaf7fd;
+  border-radius: 10px;
+  padding: 4px 10px;
+  font-size: 14px;
+}
+.gp-code--big { font-size: clamp(18px, 2vw, 22px); padding: 6px 14px; }
+.gp-idrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+/* list of groups / lessons */
+.gp-list { display: flex; flex-direction: column; gap: 10px; }
+.gp-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 3px solid #eef1f4;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+a.gp-item:hover, .gp-item.clickable:hover { border-color: var(--cyan); cursor: pointer; }
+.gp-item-body { flex: 1; min-width: 0; }
+.gp-item-title { font-weight: 700; font-size: 16px; color: #23262b; overflow-wrap: anywhere; }
+.gp-item-meta { font-size: 13px; color: #8a93a0; margin-top: 3px; }
+.gp-item-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.gp-badge {
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 5px 12px;
+  white-space: nowrap;
+  background: #eef1f4;
+  color: #6b7280;
+}
+.gp-badge--done { background: #e3f8ee; color: #12a969; }
+
+/* per-lesson results (teacher), shown under a lesson */
+.gp-results {
+  border-top: 2px solid #eef1f4;
+  margin-top: 12px;
+  padding-top: 10px;
+  width: 100%;
+}
+.gp-item.has-results { flex-wrap: wrap; }
+.gp-results-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 14px;
+}
+.gp-results-row span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.gp-results-row b { color: #23262b; }
+
+/* tabs */
+.gp-tabs {
+  display: flex;
+  gap: 6px;
+  background: #eef1f4;
+  border-radius: 999px;
+  padding: 5px;
+  margin-bottom: 18px;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.gp-tab {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  color: #6b7280;
+  padding: 9px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.gp-tab.active { background: #fff; color: #23262b; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+[data-panel][hidden] { display: none; }
+
+/* ===== Leaderboard ===== */
+.lb { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 3px solid #eef1f4;
+  border-radius: 16px;
+  padding: 10px 14px;
+  background: #fff;
+}
+.lb-row.me { border-color: var(--cyan); background: #f2fbfe; }
+.lb-rank {
+  width: 34px; height: 34px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  background: #eef1f4;
+  color: #6b7280;
+}
+.lb-row.top1 .lb-rank { background: #ffd84d; color: #6b4e00; }
+.lb-row.top2 .lb-rank { background: #dfe4ea; color: #4b5563; }
+.lb-row.top3 .lb-rank { background: #f3c29b; color: #6b3a12; }
+.lb-name { flex: 1; min-width: 0; font-weight: 700; color: #23262b; overflow-wrap: anywhere; }
+.lb-name em { font-style: normal; color: var(--cyan); font-weight: 600; }
+.lb-lessons { font-size: 13px; color: #8a93a0; white-space: nowrap; }
+.lb-score { font-weight: 800; font-size: 17px; color: var(--indigo-soft); min-width: 40px; text-align: right; }
+
+/* ===== Lesson editor: time + score per question ===== */
+.q-meta-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-meta {
+  flex: 1 1 120px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8a93a0;
+}
+.q-num {
+  width: 70px;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #23262b;
+  outline: none;
+}
+.q-num:focus { border-color: var(--cyan); }
+.edit-total { text-align: center; color: #8a93a0; font-size: 14px; font-weight: 600; margin-top: 12px; }
+.edit-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* ===== Lesson player (student) ===== */
+.qp-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 700;
+  color: #8a93a0;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.qp-timer { font-size: 22px; font-weight: 800; color: var(--indigo-soft); font-variant-numeric: tabular-nums; }
+.qp-timer.low { color: var(--team1); }
+.qp-bar { height: 8px; border-radius: 999px; background: #eef1f4; overflow: hidden; margin-bottom: 18px; }
+.qp-bar-fill { height: 100%; background: var(--cyan); width: 100%; transition: width 0.25s linear; }
+.qp-bar-fill.low { background: var(--team1); }
+.qp-question {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 700;
+  color: #23262b;
+  text-align: center;
+  margin: 8px 0 22px;
+  overflow-wrap: anywhere;
+}
+.qp-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .qp-options { grid-template-columns: 1fr; } }
+.qp-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border: 3px solid #eef1f4;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #23262b;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.qp-opt b { color: #c2c8cf; font-weight: 800; flex: 0 0 auto; }
+.qp-opt:hover:not(:disabled) { border-color: var(--cyan); }
+.qp-opt:disabled { cursor: default; }
+.qp-opt.correct { border-color: #12a969; background: #e3f8ee; }
+.qp-opt.correct b { color: #12a969; }
+.qp-opt.wrong { border-color: var(--team1); background: #fff0f0; }
+.qp-opt.wrong b { color: var(--team1); }
+.qp-feedback { text-align: center; font-weight: 700; margin-top: 16px; min-height: 22px; }
+.qp-feedback.ok { color: #12a969; }
+.qp-feedback.bad { color: var(--team1); }
+
+.qp-intro { text-align: center; }
+.qp-intro .gp-btn { margin-top: 18px; padding: 14px 54px; font-size: 17px; }
+.qp-stats { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.qp-stat { background: #eef1f4; border-radius: 14px; padding: 10px 16px; min-width: 96px; }
+.qp-stat b { display: block; font-size: 20px; color: #23262b; }
+.qp-stat span { font-size: 12px; color: #8a93a0; font-weight: 600; }
+.qp-score-big { font-size: clamp(40px, 6vw, 64px); font-weight: 900; color: var(--indigo-soft); line-height: 1.1; }
+.qp-rank { font-size: 18px; font-weight: 700; color: #23262b; margin-top: 6px; }
+.edit-main[hidden] { display: none; }
