@@ -1,47 +1,67 @@
 rules_version = '2';
 
-// Tetragon — Firestore security rules.
-// Deploy from the Firebase console (Firestore -> Rules) or `firebase deploy --only firestore:rules`.
-// Payments are written by the Click cloud function (Admin SDK), which bypasses these rules.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // keep in sync with ADMIN_EMAILS in js/admin.js
+    // site owner (admin.html) — keep in sync with ADMIN_EMAILS in js/admin.js
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email_verified == true
         && request.auth.token.email in ['smakh2004@outlook.com', 'smakh04@mail.ru'];
     }
-    function isSelf(uid) {
-      return request.auth != null && request.auth.uid == uid;
-    }
 
     match /users/{uid} {
-      allow read: if isSelf(uid) || isAdmin();
-      // new accounts always start on the free plan
-      allow create: if isSelf(uid) && request.resource.data.subscription == 'free';
-      // users may edit their own profile, but never their subscription fields
-      allow update: if isSelf(uid)
-        && !request.resource.data.diff(resource.data).affectedKeys()
-             .hasAny(['subscription', 'plan', 'paidAt', 'planExpires']);
+      // fields only the server (your Click Cloud Function) may set
+      function locked() {
+        return ['subscription', 'plan', 'paidAt', 'planExpires'];
+      }
+
+      // your own doc; the admin may read all (counts + revenue on admin.html)
+      allow read: if (request.auth != null && request.auth.uid == uid) || isAdmin();
+
+      // create your own doc, but you can't grant yourself premium
+      allow create: if request.auth != null && request.auth.uid == uid
+        && (!('subscription' in request.resource.data)
+            || request.resource.data.subscription == 'free');
+
+      // update your own doc (e.g. change display name, lastSeen), but you
+      // can't touch the subscription fields
+      allow update: if request.auth != null && request.auth.uid == uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(locked());
+
+      allow delete: if false;
     }
 
-    // site counters: anyone may add exactly 1 visit, only the admin reads them
+    // ===== SITE STATS (visit counter for admin.html) =====
+    // anyone may add exactly 1 visit; only the admin can read it
     match /stats/site {
       allow read: if isAdmin();
       allow create: if request.resource.data.keys().hasOnly(['visits'])
         && request.resource.data.visits == 1;
       allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visits'])
         && request.resource.data.visits == resource.data.visits + 1;
+      allow delete: if false;
     }
 
+    // ===== LESSON GAMES (teacher-created multiple-choice lessons) =====
     match /lessonGames/{gameId} {
+      // Any signed-in user may READ a lesson (needed to load & play it).
       allow read: if request.auth != null;
-      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
 
-      match /questions/{qid} {
+      // Create: must be signed in AND stamp the doc with your own uid as owner.
+      allow create: if request.auth != null
+        && request.resource.data.ownerId == request.auth.uid;
+
+      // Update / delete: only the owner of the lesson.
+      allow update, delete: if request.auth != null
+        && resource.data.ownerId == request.auth.uid;
+
+      // Questions live in a subcollection under each lesson.
+      match /questions/{questionId} {
+        // Anyone signed in can read the questions (to play the lesson).
         allow read: if request.auth != null;
+
+        // Only the lesson's owner can add/change/remove its questions.
         allow write: if request.auth != null
           && get(/databases/$(database)/documents/lessonGames/$(gameId)).data.ownerId == request.auth.uid;
       }
