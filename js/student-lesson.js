@@ -4,7 +4,7 @@
      - Start claims the attempt (results/{lesson}_{uid}, status "started")
      - questions come in the teacher's order; progress is saved after each one
      - each question has the teacher's time limit; time out = wrong
-     - STARS: start with 15. A wrong answer costs stars by how many wrong
+     - STARS: start with 10. A wrong answer costs stars by how many wrong
        answers are in a row (see starPenalty). At 0 stars the lesson pauses:
        buy a refill via Click (19 000 so'm) and continue from the next
        question with the same score, or finish the lesson.
@@ -39,10 +39,9 @@ const total = () => lesson.questions.length;
 
 // stars lost for a wrong answer, by wrong answers in a row (this one included)
 function starPenalty(streak, stars) {
-  if (streak >= 10) return stars;   // ten in a row: all stars
-  if (streak >= 4) return 8;
-  if (streak >= 2) return 4;
-  return 1;
+  if (streak >= 3) return stars;   // three in a row: all stars left
+  if (streak === 2) return 3;
+  return 2;
 }
 
 function fromResult(r) {

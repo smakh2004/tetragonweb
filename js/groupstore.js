@@ -46,7 +46,7 @@ const db   = getFirestore(app);
 export const OPTION_COUNT  = 4;
 export const DEFAULT_TIME  = 30;   // seconds per question
 export const DEFAULT_SCORE = 10;   // points per question
-export const STARS_START   = 15;   // stars at the start of a lesson (and after a refill)
+export const STARS_START   = 10;   // stars at the start of a lesson (and after a refill)
 
 /* ---------- auth ---------- */
 // Resolves once Firebase has restored the saved session (see lessonstore.js).
