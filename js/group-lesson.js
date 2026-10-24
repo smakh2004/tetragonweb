@@ -4,10 +4,12 @@
      group-lesson.html?group=<id>&lesson=<id>   -> EDIT that lesson
    Each question: text, 4 options (radio marks the correct one),
    time limit in seconds and the points it is worth.
+   Free teachers: FREE_MAX_QUESTIONS questions per lesson and FREE_MAX_GAMES
+   lessons across all their groups; premium teachers: unlimited.
 ===================================================== */
 import {
-  currentUser, getGroup, getLesson, saveLesson,
-  OPTION_COUNT, DEFAULT_TIME, DEFAULT_SCORE,
+  currentUser, getGroup, getLesson, saveLesson, isPremiumAsync,
+  OPTION_COUNT, DEFAULT_TIME, DEFAULT_SCORE, FREE_MAX_GAMES, FREE_MAX_QUESTIONS,
 } from "./groupstore.js";
 import { t, param } from "./groupui.js";
 
@@ -23,13 +25,19 @@ const totalEl   = $("total");
 
 const LETTERS = ["A", "B", "C", "D"];
 let questions = [];   // [{ text, options:[a,b,c,d], correct, time, score }]
+let user = null;
+let premium = false;  // free teachers: FREE_MAX_QUESTIONS per lesson, FREE_MAX_GAMES lessons
 
 function blankQuestion() {
   return { text: "", options: Array(OPTION_COUNT).fill(""), correct: 0, time: DEFAULT_TIME, score: DEFAULT_SCORE };
 }
 
-function setMsg(text, ok) {
+function setMsg(text, ok, subscribeLink) {
   msg.textContent = text || "";
+  if (subscribeLink) {
+    const a = el("a", "", { href: "subscription.html", textContent: " " + t("subscribe", "Subscribe") });
+    msg.appendChild(a);
+  }
   msg.className = "edit-msg" + (ok ? " ok" : "");
   msg.hidden = !text;
 }
@@ -108,9 +116,18 @@ function renderQuestions() {
     qList.appendChild(block);
   });
   updateTotal();
+  updateAddBtn();
+}
+
+function updateAddBtn() {
+  const maxed = !premium && questions.length >= FREE_MAX_QUESTIONS;
+  $("addQBtn").classList.toggle("is-disabled", maxed);
+  if (maxed) setMsg(t("questionLimitReached", "Free plan: up to {max} questions per lesson.").replace("{max}", FREE_MAX_QUESTIONS), false, true);
+  else if (msg.querySelector("a")) setMsg("");
 }
 
 $("addQBtn").addEventListener("click", () => {
+  if ($("addQBtn").classList.contains("is-disabled")) return;
   // new question copies the previous one's time + points
   const last = questions[questions.length - 1];
   const q = blankQuestion();
@@ -138,12 +155,18 @@ saveBtn.addEventListener("click", async () => {
   saveBtn.classList.add("busy");
   setMsg("");
   try {
-    await saveLesson(groupId, lessonId, nameInput.value, questions);
+    await saveLesson(groupId, lessonId, nameInput.value, questions, { uid: user.uid, premium });
     location.href = "group.html?id=" + encodeURIComponent(groupId);
   } catch (e) {
-    console.error("save group lesson failed:", e);
+    if (!e.code) console.error("save group lesson failed:", e);
     saveBtn.classList.remove("busy");
-    setMsg(t("saveFailed", "Couldn't save. Try again."));
+    if (e.code === "GAME_LIMIT") {
+      setMsg(t("gameLimitReached", "Free plan: up to {max} lessons.").replace("{max}", FREE_MAX_GAMES), false, true);
+    } else if (e.code === "QUESTION_LIMIT") {
+      setMsg(t("questionLimitReached", "Free plan: up to {max} questions per lesson.").replace("{max}", FREE_MAX_QUESTIONS), false, true);
+    } else {
+      setMsg(t("saveFailed", "Couldn't save. Try again."));
+    }
   }
 });
 
@@ -155,8 +178,9 @@ document.addEventListener("languagechange", () => { labelSave(); renderQuestions
 
 /* ---------- boot ---------- */
 (async () => {
-  const user = await currentUser();
+  user = await currentUser();
   if (!user) return;   // role-guard redirects
+  premium = await isPremiumAsync(user.uid).catch(() => false);
   let group = null;
   try { group = groupId ? await getGroup(groupId) : null; } catch (e) {}
   $("loading").hidden = true;

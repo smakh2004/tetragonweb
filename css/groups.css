@@ -303,3 +303,26 @@ a.gp-item:hover, .gp-item.clickable:hover { border-color: var(--cyan); cursor: p
 .qp-score-big { font-size: clamp(40px, 6vw, 64px); font-weight: 900; color: var(--indigo-soft); line-height: 1.1; }
 .qp-rank { font-size: 18px; font-weight: 700; color: #23262b; margin-top: 6px; }
 .edit-main[hidden] { display: none; }
+
+/* ===== Lesson player: stars + question progress ===== */
+.qp-stars { font-size: 18px; font-weight: 800; color: #f5a623; white-space: nowrap; }
+.qp-progress { white-space: nowrap; }
+.qp-steps { display: flex; gap: 4px; margin-bottom: 10px; }
+.qp-steps span { flex: 1; height: 6px; border-radius: 999px; background: #eef1f4; }
+.qp-steps span.ok { background: #12a969; }
+.qp-steps span.bad { background: var(--team1); }
+.qp-steps span.now { background: var(--cyan); }
+.qp-qhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.qp-qnum { color: var(--cyan); }
+.qp-points { color: #8a93a0; }
+.qp-star-big { font-size: clamp(44px, 6vw, 64px); font-weight: 900; color: #f5a623; line-height: 1.1; margin-bottom: 8px; }
+.qp-choice { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+.qp-choice .gp-btn { margin-top: 0; padding: 14px 28px; font-size: 16px; }
+.qp-wait { margin-top: 14px; }

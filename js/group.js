@@ -6,6 +6,7 @@
 import {
   currentUser, getGroup, deleteGroup, listLessons, deleteLesson, lessonMaxScore,
   listMembers, removeMember, listResults, resetAttempt, leaderboard,
+  isPremiumAsync, countTeacherLessons, FREE_MAX_GAMES,
 } from "./groupstore.js";
 import { t, esc, param, renderLeaderboard, initTabs, copyText } from "./groupui.js";
 
@@ -17,8 +18,10 @@ const studentList = $("studentList");
 const boardEl     = $("board");
 
 let group = null;
+let premium = false;   // free teachers: FREE_MAX_GAMES lessons across all groups
 let lessons = [], members = [], results = [], board = [];
 const openResults = new Set();   // lesson ids whose results are expanded
+const fmtTime = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
 
 /* ---------- render ---------- */
 function resultOf(lessonId, uid) {
@@ -40,7 +43,7 @@ function renderLessons() {
       .map(({ m, r }) => `
         <div class="gp-results-row">
           <span>${esc(m.name)}</span>
-          ${r ? `<b>${r.score} / ${max}</b>
+          ${r ? `<b>${r.score} / ${max}</b> <span class="gp-sub">${fmtTime(r.timeSpent || 0)}</span>
                  <button class="gp-btn gp-btn--danger gp-btn--sm" type="button"
                    data-act="reset" data-lesson="${l.id}" data-uid="${esc(m.uid)}">${esc(t("resetWord", "Reset"))}</button>`
               : `<span class="gp-badge">${esc(t("notTaken", "Not taken"))}</span>`}
@@ -129,6 +132,22 @@ studentList.addEventListener("click", async (e) => {
 
 $("copyBtn").addEventListener("click", (e) => copyText(groupId, e.currentTarget));
 
+// free teachers: block "Create lesson" once they have FREE_MAX_GAMES lessons in all groups
+$("newLessonBtn").addEventListener("click", async (e) => {
+  if (premium) return;
+  e.preventDefault();
+  const href = e.currentTarget.href;
+  const msg = $("lessonMsg");
+  const have = await countTeacherLessons(group.teacherId).catch(() => 0);
+  if (have < FREE_MAX_GAMES) { location.href = href; return; }
+  msg.textContent = t("gameLimitReached", "Free plan: up to {max} lessons.").replace("{max}", FREE_MAX_GAMES) + " ";
+  const a = document.createElement("a");
+  a.href = "subscription.html";
+  a.textContent = t("subscribe", "Subscribe");
+  msg.appendChild(a);
+  msg.hidden = false;
+});
+
 $("deleteGroupBtn").addEventListener("click", async (e) => {
   const btn = e.currentTarget;
   if (!confirm(t("confirmDeleteGroup", "Delete this group, its lessons and all results? This can't be undone."))) return;
@@ -158,6 +177,7 @@ document.addEventListener("languagechange", () => { if (group) renderAll(); });
   $("groupName").textContent = group.name;
   $("groupId").textContent = groupId;
   $("newLessonBtn").href = "group-lesson.html?group=" + encodeURIComponent(groupId);
+  premium = await isPremiumAsync(user.uid).catch(() => false);
   $("page").hidden = false;
   initTabs();
   try { await refresh(); } catch (e) { console.error("load group failed:", e); }

@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css?v=32" />
-  <link rel="stylesheet" href="css/groups.css?v=1" />
+  <link rel="stylesheet" href="css/groups.css?v=2" />
 </head>
 <body data-role="student">
   <!-- ===== Top bar ===== -->
@@ -42,8 +42,10 @@
         <div class="qp-stat"><b id="statQ"></b><span data-i18n="questionsWord">questions</span></div>
         <div class="qp-stat"><b id="statPts"></b><span data-i18n="pointsWord">points</span></div>
         <div class="qp-stat"><b id="statTime"></b><span data-i18n="timeWord">time</span></div>
+        <div class="qp-stat"><b id="statStars"></b><span data-i18n="starsWord">stars</span></div>
       </div>
       <p class="gp-sub" style="margin-top:16px" data-i18n="onceWarning">You can take this lesson only once. Each question has its own timer — when it runs out, the question counts as wrong.</p>
+      <p class="gp-sub" style="margin-top:8px" data-i18n="starsRules">Wrong answers cost stars: −1, two in a row −4, four in a row −8, ten in a row — all stars. With no stars left the lesson stops.</p>
       <button class="gp-btn" id="startBtn" type="button" data-i18n="startWord">Start</button>
       <p class="gp-msg" id="introMsg" hidden></p>
     </section>
@@ -51,14 +53,31 @@
     <!-- playing -->
     <section class="gp-card" id="play" hidden>
       <div class="qp-top">
-        <span id="qpProgress"></span>
+        <span class="qp-progress" id="qpProgress"></span>
         <span class="qp-timer" id="qpTimer"></span>
-        <span id="qpPoints"></span>
+        <span class="qp-stars" id="qpStars"></span>
       </div>
+      <div class="qp-steps" id="qpSteps"></div>
       <div class="qp-bar"><div class="qp-bar-fill" id="qpBar"></div></div>
+      <div class="qp-qhead">
+        <span class="qp-qnum" id="qpNum"></span>
+        <span class="qp-points" id="qpPoints"></span>
+      </div>
       <div class="qp-question" id="qpQuestion"></div>
       <div class="qp-options" id="qpOptions"></div>
       <p class="qp-feedback" id="qpFeedback"></p>
+    </section>
+
+    <!-- out of stars: buy a refill or finish -->
+    <section class="gp-card qp-intro" id="noStars" hidden>
+      <div class="qp-star-big">★ 0</div>
+      <h1 class="gp-h1" data-i18n="noStarsTitle">You're out of stars</h1>
+      <p class="gp-sub" id="noStarsText"></p>
+      <div class="qp-choice">
+        <button class="gp-btn" id="buyStarsBtn" type="button"></button>
+        <button class="gp-btn gp-btn--ghost" id="finishBtn" type="button" data-i18n="finishLesson">Finish lesson</button>
+      </div>
+      <p class="gp-sub qp-wait" id="waitPay" hidden data-i18n="waitingPayment">Waiting for payment… Finish paying in the Click tab, then come back here.</p>
     </section>
 
     <!-- finished -->
@@ -66,7 +85,11 @@
       <div class="gp-card qp-intro">
         <h1 class="gp-h1" id="resultTitle"></h1>
         <div class="qp-score-big" id="resultScore"></div>
-        <p class="gp-sub" id="resultCorrect"></p>
+        <div class="qp-stats">
+          <div class="qp-stat"><b id="resCorrect"></b><span data-i18n="correctAnswers">correct</span></div>
+          <div class="qp-stat"><b id="resTime"></b><span data-i18n="timeWord">time</span></div>
+          <div class="qp-stat"><b id="resStars"></b><span data-i18n="starsWord">stars</span></div>
+        </div>
         <p class="qp-rank" id="resultRank"></p>
       </div>
       <h2 class="gp-h2" data-i18n="leaderboard">Leaderboard</h2>
@@ -83,7 +106,7 @@
     </div>
   </footer>
 
-  <script src="js/i18n.js?v=6"></script>
+  <script src="js/i18n.js?v=7"></script>
   <script type="module" src="js/role-guard.js"></script>
   <script type="module" src="js/student-lesson.js"></script>
   <script type="module" src="js/user-menu.js"></script>

@@ -15,17 +15,15 @@ import {
   getFirestore, doc, getDoc, onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
+import { clickPayUrl } from "./click.js";
 
 const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 try { await setPersistence(auth, browserLocalPersistence); } catch (e) {}
 
-/* ---------- Click / plan config ---------- */
-const CLICK_SERVICE_ID = "112479";
-const CLICK_MERCHANT_ID = "64974";
-// price per plan in so'm — MUST match PLANS in functions/index.js and the page
-const PLAN_PRICE = { start: 19000, plus: 49000, pro: 149000 };
+/* ---------- Click / plan config: js/click.js ---------- */
+const PLANS = ["start", "plus", "pro"];
 
 let currentUser = null;
 let authReady = false;
@@ -72,15 +70,8 @@ async function choosePlan(btn, payTab) {
     return;
   }
 
-  const plan = btn.dataset.plan || "start";
-  const amount = PLAN_PRICE[plan] || PLAN_PRICE.start;
-  const transParam = currentUser.uid + "." + plan;   // clickComplete reads "uid.plan"
-
-  const url = "https://my.click.uz/services/pay/"
-            + "?service_id=" + CLICK_SERVICE_ID
-            + "&merchant_id=" + CLICK_MERCHANT_ID
-            + "&amount=" + amount
-            + "&transaction_param=" + encodeURIComponent(transParam);
+  const plan = PLANS.includes(btn.dataset.plan) ? btn.dataset.plan : "start";
+  const url = clickPayUrl(currentUser.uid, plan);   // clickComplete reads "uid.plan"
 
   // remember the current payment stamp so we only react to a NEW one (renewals too)
   let prevStamp = "";

@@ -38,9 +38,12 @@ function renderLessons() {
           <div class="gp-item-meta">${(l.questions || []).length} ${esc(t("questionsWord", "questions"))} ·
             ${max} ${esc(t("pointsWord", "points"))}</div>
         </div>
-        ${r
-          ? `<span class="gp-badge gp-badge--done">${esc(t("doneScore", "Done"))}: ${r.score} / ${max}</span>`
-          : `<a class="gp-btn gp-btn--sm" href="${href}">${esc(t("startWord", "Start"))}</a>`}
+        ${!r
+          ? `<a class="gp-btn gp-btn--sm" href="${href}">${esc(t("startWord", "Start"))}</a>`
+          : r.status !== "finished" && r.stars === 0
+          // paused at 0 stars: can still buy a refill and continue
+          ? `<a class="gp-btn gp-btn--sm" href="${href}">${esc(t("continueWord", "Continue"))}</a>`
+          : `<span class="gp-badge gp-badge--done">${esc(t("doneScore", "Done"))}: ${r.score} / ${max}</span>`}
       </div>`;
   }).join("");
 }

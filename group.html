@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css?v=32" />
-  <link rel="stylesheet" href="css/groups.css?v=1" />
+  <link rel="stylesheet" href="css/groups.css?v=2" />
 </head>
 <body data-role="teacher">
   <!-- ===== Top bar ===== -->
@@ -54,6 +54,7 @@
 
     <section data-panel="lessons">
       <a class="gp-btn" id="newLessonBtn" href="#" data-i18n="createLesson" style="margin-bottom:14px">Create lesson</a>
+      <p class="gp-msg" id="lessonMsg" hidden style="margin:-4px 0 14px"></p>
       <div class="gp-list" id="lessonList"></div>
     </section>
 
@@ -75,7 +76,7 @@
     </div>
   </footer>
 
-  <script src="js/i18n.js?v=6"></script>
+  <script src="js/i18n.js?v=7"></script>
   <script type="module" src="js/role-guard.js"></script>
   <script type="module" src="js/group.js"></script>
   <script type="module" src="js/user-menu.js"></script>

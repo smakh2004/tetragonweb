@@ -16,16 +16,28 @@
         questions: [{ text, options:[a,b,c,d], correct:0-3, time:<sec>, score:<pts> }]
      groups/{groupId}/results/{lessonId}_{uid}     one attempt per student per lesson
         lessonId, uid, name, status:"started"|"finished",
-        score, correct, answers:[<picked index | -1>], startedAt, finishedAt
+        score, correct, answers:[<picked index | -1>], timeSpent:<sec>,
+        stars, wrongStreak, startedAt, finishedAt
+        refills, refilledAt, resumable   (set ONLY by the clickComplete function)
      users/{uid}.groups : [groupId, ...]          (groups a student joined)
+     users/{uid}.starRefillFor : "groups/<gid>/results/<id>"  (attempt a star
+        payment refills; read by clickComplete)
+
+   Free teachers: up to FREE_MAX_GAMES lessons in all their groups together,
+   FREE_MAX_QUESTIONS questions per lesson (same limits as lessonstore.js).
+   Premium teachers and groups: unlimited.
 ===================================================== */
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc,
   addDoc, query, where, serverTimestamp, writeBatch, arrayUnion, arrayRemove,
+  getCountFromServer, onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { firebaseConfig } from "./firebase-config.js";
+import { FREE_MAX_GAMES, FREE_MAX_QUESTIONS, isPremiumAsync } from "./lessonstore.js";
+
+export { FREE_MAX_GAMES, FREE_MAX_QUESTIONS, isPremiumAsync };
 
 const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -34,6 +46,7 @@ const db   = getFirestore(app);
 export const OPTION_COUNT  = 4;
 export const DEFAULT_TIME  = 30;   // seconds per question
 export const DEFAULT_SCORE = 10;   // points per question
+export const STARS_START   = 15;   // stars at the start of a lesson (and after a refill)
 
 /* ---------- auth ---------- */
 // Resolves once Firebase has restored the saved session (see lessonstore.js).
@@ -177,7 +190,22 @@ export async function getLesson(groupId, lessonId) {
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
 }
 
-export async function saveLesson(groupId, lessonId, title, questions) {
+// Lessons in ALL of this teacher's groups (for the free limit).
+export async function countTeacherLessons(uid) {
+  const groups = await listTeacherGroups(uid);
+  const counts = await Promise.all(groups.map((g) =>
+    getCountFromServer(collection(db, "groups", g.id, "lessons"))));
+  return counts.reduce((s, c) => s + c.data().count, 0);
+}
+
+const limitError = (code) => { const e = new Error("LIMIT"); e.code = code; return e; };
+
+// Throws err.code "GAME_LIMIT" (too many lessons) or "QUESTION_LIMIT" for free teachers.
+export async function saveLesson(groupId, lessonId, title, questions, { uid, premium } = {}) {
+  if (!premium) {
+    if (questions.length > FREE_MAX_QUESTIONS) throw limitError("QUESTION_LIMIT");
+    if (!lessonId && await countTeacherLessons(uid) >= FREE_MAX_GAMES) throw limitError("GAME_LIMIT");
+  }
   const data = { title: title.trim(), questions: cleanQuestions(questions), updatedAt: serverTimestamp() };
   if (lessonId) {
     await updateDoc(doc(db, "groups", groupId, "lessons", lessonId), data);
@@ -220,16 +248,32 @@ export async function startAttempt(groupId, lessonId, user) {
   }
   await setDoc(ref, {
     lessonId, uid: user.uid, name: displayName(user),
-    status: "started", score: 0, correct: 0, answers: [],
+    status: "started", score: 0, correct: 0, answers: [], timeSpent: 0,
+    stars: STARS_START, wrongStreak: 0,
     startedAt: serverTimestamp(),
   });
 }
 
 // Saved after every question, so leaving mid-lesson keeps what was earned.
-export async function saveProgress(groupId, lessonId, uid, { answers, score, correct }, finished) {
-  const data = { answers, score, correct };
+export async function saveProgress(groupId, lessonId, uid, s, finished) {
+  const data = {
+    answers: s.answers, score: s.score, correct: s.correct, timeSpent: s.timeSpent || 0,
+    stars: s.stars, wrongStreak: s.wrongStreak || 0,
+    resumable: false,   // a paid refill can be resumed only until the next answer
+  };
   if (finished) Object.assign(data, { status: "finished", finishedAt: serverTimestamp() });
   await updateDoc(resultRef(groupId, lessonId, uid), data);
+}
+
+// Live updates of one attempt (to notice a paid star refill).
+export function watchResult(groupId, lessonId, uid, cb) {
+  return onSnapshot(resultRef(groupId, lessonId, uid), (snap) => cb(snap.exists() ? snap.data() : null));
+}
+
+// Points the next Click star payment at this attempt (read by clickComplete).
+export async function requestStarRefill(groupId, lessonId, uid) {
+  await setDoc(doc(db, "users", uid),
+    { starRefillFor: `groups/${groupId}/results/${lessonId}_${uid}` }, { merge: true });
 }
 
 // Teacher: let a student take a lesson again.
