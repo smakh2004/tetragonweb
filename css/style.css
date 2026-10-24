@@ -2463,3 +2463,25 @@ body.game-quiz .check-btn  { border-radius: clamp(12px, 2.2vw, 999px); }
   /* editor card fills the screen width */
   .edit-card-wrap { max-width: 100%; }
 }
+/* ===== Landing page (index.html) — placeholder with a Register button ===== */
+.landing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  min-height: calc(100vh - 200px);
+}
+.landing[hidden] { display: none; }
+
+.register-btn {
+  display: inline-block;
+  background: #23262b;
+  color: #fff;
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 16px 44px;
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+.register-btn:hover { background: #14171b; }

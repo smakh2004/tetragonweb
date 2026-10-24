@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon</title>
+
+  <!-- Favicon (your logo) -->
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css?v=30" />
+</head>
+<body data-role="teacher">
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+
+    <!-- Log In (uses your own icon image at assets/icons/login.png) -->
+    <a class="download-app login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
+  </header>
+
+  <!-- ===== Center hero ===== -->
+  <main class="hero">
+    <div class="stage">
+      <!-- Animation moved INSIDE .stage so it shrinks together with
+           the SCIENCE word and labels on small screens -->
+      <canvas id="mrSquare" class="rive-bg"></canvas>
+
+      <div class="labels-left">
+        <span class="label-math" data-i18n="math">math</span>
+        <span class="label-physics" data-i18n="physics">physics</span>
+      </div>
+      <!-- "create lessons" replaces the old "always learn" label; opens the Lessons page -->
+      <a class="label-always label-lessons" href="lessons.html" data-i18n="createLessons">create lessons</a>
+
+      <!-- Opens the Mini Games page -->
+      <a class="label-mini" href="mini-games.html" data-i18n="mini">Mini Games</a>
+
+      <h1 class="science" data-i18n="science">SCIENCE</h1>
+    </div>
+  </main>
+
+  <!-- ===== Language selector (collapsed by default) ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- 1) Rive runtime -->
+  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
+  <!-- 2) shared language system -->
+  <script src="js/i18n.js"></script>
+  <!-- 3) this page's animation -->
+  <script src="js/script.js"></script>
+  <!-- user menu (shows avatar + name when signed in) -->
+  <!-- only teachers stay on this page -->
+  <script type="module" src="js/role-guard.js"></script>
+  <script type="module" src="js/user-menu.js"></script>
+</body>
+</html>

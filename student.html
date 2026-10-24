@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetragon</title>
+
+  <!-- Favicon (your logo) -->
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css?v=31" />
+</head>
+<body data-role="student">
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
+
+    <!-- replaced by the user menu (avatar + name) once signed in -->
+    <a class="download-app login-link" href="login.html" aria-label="Log in">
+      <img class="login-ico" src="assets/icons/login.png" alt="" />
+      <span data-i18n="login">Log In</span>
+    </a>
+  </header>
+
+  <!-- ===== Student home (empty for now) ===== -->
+  <main class="hero"></main>
+
+  <!-- ===== Language selector (collapsed by default) ===== -->
+  <footer class="langbar">
+    <div class="lang-switch" id="langSwitch">
+      <span class="bar">|</span>
+      <button class="lang-current" id="langCurrent" type="button">EN</button>
+      <div class="lang-options" id="langOptions"></div>
+    </div>
+  </footer>
+
+  <!-- shared language system -->
+  <script src="js/i18n.js"></script>
+  <!-- only students stay on this page -->
+  <script type="module" src="js/role-guard.js"></script>
+  <!-- user menu (shows avatar + name when signed in) -->
+  <script type="module" src="js/user-menu.js"></script>
+</body>
+</html>

@@ -93,7 +93,7 @@ function buildMenu(user) {
   document.addEventListener("click", () => menu.classList.remove("open"));
 
   menu.querySelector("#signoutBtn").addEventListener("click", async () => {
-    try { localStorage.removeItem("tetragon_plan"); } catch (e) {}
+    try { localStorage.removeItem("tetragon_plan"); localStorage.removeItem("tetragon_role"); } catch (e) {}
     try { await signOut(auth); } catch (e) {}
     window.location.href = "login.html";
   });

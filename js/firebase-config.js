@@ -13,6 +13,3 @@ export const firebaseConfig = {
   appId:             "1:347124399109:web:b69fe2177b49606ef4306c",
   measurementId:     "G-Y75HGPSV13",
 };
-
-// Where to send the user after a successful log in / sign up:
-export const AFTER_AUTH_REDIRECT = "index.html";

@@ -16,39 +16,17 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="css/style.css?v=30" />
+  <link rel="stylesheet" href="css/style.css?v=31" />
 </head>
 <body>
   <!-- ===== Top bar ===== -->
   <header class="topbar">
     <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
-
-    <!-- Log In (uses your own icon image at assets/icons/login.png) -->
-    <a class="download-app login-link" href="login.html" aria-label="Log in">
-      <img class="login-ico" src="assets/icons/login.png" alt="" />
-      <span data-i18n="login">Log In</span>
-    </a>
   </header>
 
-  <!-- ===== Center hero ===== -->
-  <main class="hero">
-    <div class="stage">
-      <!-- Animation moved INSIDE .stage so it shrinks together with
-           the SCIENCE word and labels on small screens -->
-      <canvas id="mrSquare" class="rive-bg"></canvas>
-
-      <div class="labels-left">
-        <span class="label-math" data-i18n="math">math</span>
-        <span class="label-physics" data-i18n="physics">physics</span>
-      </div>
-      <!-- "create lessons" replaces the old "always learn" label; opens the Lessons page -->
-      <a class="label-always label-lessons" href="lessons.html" data-i18n="createLessons">create lessons</a>
-
-      <!-- Opens the Mini Games page -->
-      <a class="label-mini" href="mini-games.html" data-i18n="mini">Mini Games</a>
-
-      <h1 class="science" data-i18n="science">SCIENCE</h1>
-    </div>
+  <!-- ===== Landing (placeholder for the new main page) ===== -->
+  <main class="landing" id="landing">
+    <a class="register-btn" href="signup.html" data-i18n="register">Register</a>
   </main>
 
   <!-- ===== Language selector (collapsed by default) ===== -->
@@ -60,13 +38,9 @@
     </div>
   </footer>
 
-  <!-- 1) Rive runtime -->
-  <script src="https://unpkg.com/@rive-app/canvas@2"></script>
-  <!-- 2) shared language system -->
+  <!-- shared language system -->
   <script src="js/i18n.js"></script>
-  <!-- 3) this page's animation -->
-  <script src="js/script.js"></script>
-  <!-- user menu (shows avatar + name when signed in) -->
-  <script type="module" src="js/user-menu.js"></script>
+  <!-- signed-in users go straight to their role's home page -->
+  <script type="module" src="js/landing.js"></script>
 </body>
 </html>

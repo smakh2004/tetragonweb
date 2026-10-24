@@ -7,11 +7,13 @@ import {
   getAuth, setPersistence, browserLocalPersistence,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail,
+  getAdditionalUserInfo, deleteUser, signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, serverTimestamp,
+  getFirestore, doc, getDoc, setDoc, serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { firebaseConfig, AFTER_AUTH_REDIRECT } from "./firebase-config.js";
+import { firebaseConfig } from "./firebase-config.js";
+import { ROLES, getRole, homeFor, rememberRole } from "./role.js";
 
 const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -35,20 +37,52 @@ const submitBtn = document.getElementById("submitBtn");
 const googleBtn = document.getElementById("googleBtn");
 const errorEl   = document.getElementById("authError");
 const forgotBtn = document.getElementById("forgotBtn");
+const rolePick  = document.getElementById("rolePick");
+
+// ---------- Role picker (signup only) ----------
+function selectedRole() {
+  const el = document.querySelector('input[name="role"]:checked');
+  return el && ROLES.includes(el.value) ? el.value : "";
+}
+if (rolePick) {
+  rolePick.addEventListener("change", () => {
+    rolePick.classList.remove("invalid");
+    showError("");
+  });
+}
+// signup needs a role before any account is created
+function requireRole() {
+  if (MODE !== "signup") return true;
+  if (selectedRole()) return true;
+  showError(t("errPickRole", "Choose whether you are a student or a teacher."));
+  if (rolePick) rolePick.classList.add("invalid");
+  return false;
+}
 
 // ---------- User Creation Helper ----------
-// Automatically guarantees a user document in Firestore on signup/login
-async function ensureUserDoc(user) {
+// Guarantees a user document in Firestore on signup/login and returns the
+// user's role. A new account gets the role picked on the signup page; an
+// existing account keeps its role and subscription untouched (accounts made
+// before roles existed become "teacher" inside getRole).
+async function ensureUserDoc(user, newRole) {
   if (!user || !user.uid) return;
+  const ref = doc(db, "users", user.uid);
   try {
-    await setDoc(doc(db, "users", user.uid), {
-      email: user.email || "",
-      subscription: "free",
-      createdAt: serverTimestamp(),
-    }, { merge: true });
+    const snap = await getDoc(ref);
+    if (!snap.exists() && newRole) {
+      await setDoc(ref, {
+        email: user.email || "",
+        subscription: "free",
+        role: newRole,
+        createdAt: serverTimestamp(),
+      }, { merge: true });
+      rememberRole(newRole);
+      return newRole;
+    }
   } catch (err) {
     console.error("Failed to create Firestore user doc:", err);
   }
+  return getRole(user);
 }
 
 // Translate error keys or fallback
@@ -91,11 +125,12 @@ function setBusy(busy) {
 }
 
 // Where to go after a successful auth. If the page was reached with a
-// ?next=<page> (e.g. from the lessons flow), honor it; otherwise use the
-// configured default (index.html). This keeps "log in -> back to lessons".
-function goNext() {
+// ?next=<page> (e.g. from the lessons flow), honor it; otherwise go to the
+// role's home page (teacher.html / student.html). This keeps
+// "log in -> back to lessons".
+function goNext(role) {
   try { localStorage.setItem("tetragon_signed_in", "1"); } catch (e) {}
-  let dest = AFTER_AUTH_REDIRECT;
+  let dest = homeFor(role);
   try {
     const next = new URLSearchParams(location.search).get("next");
     // only allow same-site relative targets (no http://, no //) for safety
@@ -126,6 +161,7 @@ if (form) {
     const pass  = passEl.value || "";
     if (!email) { showError(t("errEnterEmail", "Enter your email.")); emailEl.focus(); return; }
     if (!pass)  { showError(t("errEnterPassword", "Enter a password."));  passEl.focus();  return; }
+    if (!requireRole()) return;
 
     setBusy(true);
     try {
@@ -135,8 +171,7 @@ if (form) {
       } else {
         cred = await signInWithEmailAndPassword(auth, email, pass);
       }
-      await ensureUserDoc(cred.user);
-      goNext();
+      goNext(await ensureUserDoc(cred.user, selectedRole()));
     } catch (err) {
       showError(friendly(err.code));
       setBusy(false);
@@ -149,11 +184,20 @@ if (googleBtn) {
   const provider = new GoogleAuthProvider();
   googleBtn.addEventListener("click", async () => {
     showError("");
+    if (!requireRole()) return;
     setBusy(true);
     try {
       const cred = await signInWithPopup(auth, provider);
-      await ensureUserDoc(cred.user);
-      goNext();
+      // Google on the LOG IN page creates an account for a new email. We
+      // don't know if they're a student or a teacher, so undo it and send
+      // them to sign up instead.
+      if (MODE === "login" && getAdditionalUserInfo(cred)?.isNewUser) {
+        try { await deleteUser(cred.user); } catch (e) { try { await signOut(auth); } catch (_) {} }
+        showError(t("errNoAccountGoogle", "No account found for this Google account. Create an account first."));
+        setBusy(false);
+        return;
+      }
+      goNext(await ensureUserDoc(cred.user, selectedRole()));
     } catch (err) {
       showError(friendly(err.code));
       setBusy(false);

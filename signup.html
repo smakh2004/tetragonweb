@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/auth.css?v=3" />
 </head>
 <body class="auth-page" data-auth="signup">
   <main class="auth-split">
@@ -25,6 +25,18 @@
         <a href="index.html" class="auth-logo"><img src="assets/tetragon.png" alt="Tetragon" /></a>
 
         <h1 class="auth-title" data-i18n="authSignup">Create account</h1>
+
+        <!-- role: applies to both Google and email sign up -->
+        <div class="role-pick" id="rolePick" role="radiogroup">
+          <label class="role-opt">
+            <input type="radio" name="role" value="student" />
+            <span data-i18n="roleStudent">Student</span>
+          </label>
+          <label class="role-opt">
+            <input type="radio" name="role" value="teacher" />
+            <span data-i18n="roleTeacher">Teacher</span>
+          </label>
+        </div>
 
         <button class="g-btn" id="googleBtn" type="button">
           <span data-i18n="continueGoogle">Continue with Google</span>
