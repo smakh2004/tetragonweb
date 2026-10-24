@@ -9,7 +9,7 @@ import {
   GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, serverTimestamp,
+  getFirestore, doc, setDoc, serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig, AFTER_AUTH_REDIRECT } from "./firebase-config.js";
 
@@ -37,23 +37,15 @@ const errorEl   = document.getElementById("authError");
 const forgotBtn = document.getElementById("forgotBtn");
 
 // ---------- User Creation Helper ----------
-// Automatically guarantees a user document in Firestore on signup/login.
-// Defaults are only written when the doc is new, so logging in never
-// resets a paid subscription back to "free".
+// Automatically guarantees a user document in Firestore on signup/login
 async function ensureUserDoc(user) {
   if (!user || !user.uid) return;
   try {
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      await setDoc(ref, { email: user.email || "" }, { merge: true });
-      return;
-    }
-    await setDoc(ref, {
+    await setDoc(doc(db, "users", user.uid), {
       email: user.email || "",
       subscription: "free",
       createdAt: serverTimestamp(),
-    });
+    }, { merge: true });
   } catch (err) {
     console.error("Failed to create Firestore user doc:", err);
   }
