@@ -2,7 +2,7 @@
    TETRAGON — role guard for the role home pages
    <body data-role="teacher"> (teacher.html) or
    <body data-role="student"> (student.html).
-     - signed out          -> index.html (register page)
+     - signed out          -> signup.html (registration)
      - signed in, wrong role -> that role's home page
 ===================================================== */
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -18,7 +18,7 @@ const pageRole = document.body.dataset.role;
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     forgetRole();
-    location.replace("index.html");
+    location.replace("signup.html");
     return;
   }
   const role = await getRole(user);
