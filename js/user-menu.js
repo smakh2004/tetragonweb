@@ -10,10 +10,41 @@ import {
   getAuth, onAuthStateChanged, signOut,
   setPersistence, browserLocalPersistence,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, increment, serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
 const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db   = getFirestore(app);
+
+/* ---------- site stats (read by admin.html) ---------- */
+// one visit per browser session -> stats/site.visits
+const VISIT_KEY = "tetragon_visit_counted";
+try {
+  if (!sessionStorage.getItem(VISIT_KEY)) {
+    sessionStorage.setItem(VISIT_KEY, "1");
+    setDoc(doc(db, "stats", "site"), { visits: increment(1) }, { merge: true }).catch(() => {});
+  }
+} catch (e) {}
+
+// signed-in users stamp users/{uid}.lastSeen at most once a minute (admin "Active users")
+const SEEN_EVERY_MS = 60 * 1000;
+let seenTimer = null;
+function markSeen(uid) {
+  if (document.visibilityState !== "visible") return;
+  setDoc(doc(db, "users", uid), { lastSeen: serverTimestamp() }, { merge: true }).catch(() => {});
+}
+function startSeen(uid) {
+  stopSeen();
+  markSeen(uid);
+  seenTimer = setInterval(() => markSeen(uid), SEEN_EVERY_MS);
+}
+function stopSeen() {
+  if (seenTimer) clearInterval(seenTimer);
+  seenTimer = null;
+}
 
 // --- no "Log In" flash ---
 // Firebase takes a moment to confirm the session, so if we were signed in
@@ -112,6 +143,6 @@ onAuthStateChanged(auth, (user) => {
     else localStorage.removeItem(WAS_AUTH_KEY);
   } catch (e) {}
 
-  if (user) buildMenu(user);
-  else teardownMenu();
+  if (user) { buildMenu(user); startSeen(user.uid); }
+  else { teardownMenu(); stopSeen(); }
 });

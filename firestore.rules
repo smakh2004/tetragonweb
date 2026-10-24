@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// Tetragon — Firestore security rules.
+// Deploy from the Firebase console (Firestore -> Rules) or `firebase deploy --only firestore:rules`.
+// Payments are written by the Click cloud function (Admin SDK), which bypasses these rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // keep in sync with ADMIN_EMAILS in js/admin.js
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['smakh2004@outlook.com', 'smakh04@mail.ru'];
+    }
+    function isSelf(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      // new accounts always start on the free plan
+      allow create: if isSelf(uid) && request.resource.data.subscription == 'free';
+      // users may edit their own profile, but never their subscription fields
+      allow update: if isSelf(uid)
+        && !request.resource.data.diff(resource.data).affectedKeys()
+             .hasAny(['subscription', 'plan', 'paidAt', 'planExpires']);
+    }
+
+    // site counters: anyone may add exactly 1 visit, only the admin reads them
+    match /stats/site {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['visits'])
+        && request.resource.data.visits == 1;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visits'])
+        && request.resource.data.visits == resource.data.visits + 1;
+    }
+
+    match /lessonGames/{gameId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+
+      match /questions/{qid} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null
+          && get(/databases/$(database)/documents/lessonGames/$(gameId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}
