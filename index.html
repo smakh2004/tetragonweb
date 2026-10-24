@@ -16,18 +16,16 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="css/style.css?v=30" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <!-- ===== Top bar ===== -->
   <header class="topbar">
     <img class="logo" src="assets/tetragon.png" alt="Tetragon" />
-
-    <!-- Log In (uses your own icon image at assets/icons/login.png) -->
-    <a class="download-app login-link" href="login.html" aria-label="Log in">
-      <img class="login-ico" src="assets/icons/login.png" alt="" />
-      <span data-i18n="login">Log In</span>
-    </a>
+    <a class="download-app"
+       href="https://play.google.com/store/apps/details?id=com.tetragon.app"
+       target="_blank" rel="noopener noreferrer"
+       data-i18n="download">Download App</a>
   </header>
 
   <!-- ===== Center hero ===== -->
@@ -41,8 +39,7 @@
         <span class="label-math" data-i18n="math">math</span>
         <span class="label-physics" data-i18n="physics">physics</span>
       </div>
-      <!-- "create lessons" replaces the old "always learn" label; opens the Lessons page -->
-      <a class="label-always label-lessons" href="lessons.html" data-i18n="createLessons">create lessons</a>
+      <span class="label-always" data-i18n="always">always learn</span>
 
       <!-- Opens the Mini Games page -->
       <a class="label-mini" href="mini-games.html" data-i18n="mini">Mini Games</a>
@@ -66,7 +63,5 @@
   <script src="js/i18n.js"></script>
   <!-- 3) this page's animation -->
   <script src="js/script.js"></script>
-  <!-- user menu (shows avatar + name when signed in) -->
-  <script type="module" src="js/user-menu.js"></script>
 </body>
 </html>
