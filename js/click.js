@@ -7,7 +7,7 @@ export const CLICK_SERVICE_ID  = "112479";
 export const CLICK_MERCHANT_ID = "64974";
 
 // price per product in so'm
-export const PRICES = { start: 19000, plus: 49000, pro: 149000, stars: 19000 };
+export const PRICES = { start: 19000, plus: 49000, pro: 149000, stars: 5000 };
 
 export function clickPayUrl(uid, product) {
   return "https://my.click.uz/services/pay/"

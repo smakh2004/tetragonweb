@@ -6,7 +6,7 @@
      - each question has the teacher's time limit; time out = wrong
      - STARS: start with 10. A wrong answer costs stars by how many wrong
        answers are in a row (see starPenalty). At 0 stars the lesson pauses:
-       buy a refill via Click (19 000 so'm) and continue from the next
+       buy a refill via Click (5 000 so'm) and continue from the next
        question with the same score, or finish the lesson.
      - at the end: score, correct count, time, position in the group leaderboard
    Coming back to a lesson already taken (or left half-way) shows the result;
