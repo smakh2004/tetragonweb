@@ -17,7 +17,7 @@
      groups/{groupId}/results/{lessonId}_{uid}     one attempt per student per lesson
         lessonId, uid, name, status:"started"|"finished",
         score, correct, answers:[<picked index | -1>], timeSpent:<sec>,
-        stars, wrongStreak, startedAt, finishedAt
+        stars, wrongStreak, rightStreak, startedAt, finishedAt
         refills, refilledAt, resumable   (set ONLY by the clickComplete function)
      users/{uid}.groups : [groupId, ...]          (groups a student joined)
      users/{uid}.starRefillFor : "groups/<gid>/results/<id>"  (attempt a star
@@ -249,7 +249,7 @@ export async function startAttempt(groupId, lessonId, user) {
   await setDoc(ref, {
     lessonId, uid: user.uid, name: displayName(user),
     status: "started", score: 0, correct: 0, answers: [], timeSpent: 0,
-    stars: STARS_START, wrongStreak: 0,
+    stars: STARS_START, wrongStreak: 0, rightStreak: 0,
     startedAt: serverTimestamp(),
   });
 }
@@ -258,7 +258,7 @@ export async function startAttempt(groupId, lessonId, user) {
 export async function saveProgress(groupId, lessonId, uid, s, finished) {
   const data = {
     answers: s.answers, score: s.score, correct: s.correct, timeSpent: s.timeSpent || 0,
-    stars: s.stars, wrongStreak: s.wrongStreak || 0,
+    stars: s.stars, wrongStreak: s.wrongStreak || 0, rightStreak: s.rightStreak || 0,
     resumable: false,   // a paid refill can be resumed only until the next answer
   };
   if (finished) Object.assign(data, { status: "finished", finishedAt: serverTimestamp() });

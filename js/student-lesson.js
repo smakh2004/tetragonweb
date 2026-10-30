@@ -5,7 +5,8 @@
      - questions come in the teacher's order; progress is saved after each one
      - each question has the teacher's time limit; time out = wrong
      - STARS: start with 10. A wrong answer costs stars by how many wrong
-       answers are in a row (see starPenalty). At 0 stars the lesson pauses:
+       answers are in a row (see starPenalty); correct answers in a row
+       earn stars back (see starBonus). At 0 stars the lesson pauses:
        buy a refill via Click (5 000 so'm) and continue from the next
        question with the same score, or finish the lesson.
      - at the end: score, correct count, time, position in the group leaderboard
@@ -27,7 +28,7 @@ const LETTERS = ["A", "B", "C", "D"];
 const NEXT_DELAY = 1300;   // ms to show right/wrong before the next question
 
 let me = null, lesson = null;
-let state = null;          // { answers, score, correct, stars, wrongStreak, timeSpent }
+let state = null;          // { answers, score, correct, stars, wrongStreak, rightStreak, timeSpent }
 let index = 0, shownAt = 0, deadline = 0, timer = null, locked = false;
 let playing = false;
 let saving = Promise.resolve();   // keeps progress writes in order
@@ -44,6 +45,13 @@ function starPenalty(streak, stars) {
   return 2;
 }
 
+// stars won for a correct answer, by correct answers in a row (this one included)
+function starBonus(streak) {
+  if (streak === 4) return 3;   // four in a row
+  if (streak >= 2) return 1;    // two or more in a row
+  return 0;
+}
+
 function fromResult(r) {
   return {
     answers: [...(r.answers || [])],
@@ -51,6 +59,7 @@ function fromResult(r) {
     correct: r.correct || 0,
     stars: typeof r.stars === "number" ? r.stars : STARS_START,
     wrongStreak: r.wrongStreak || 0,
+    rightStreak: r.rightStreak || 0,
     timeSpent: r.timeSpent || 0,
   };
 }
@@ -151,12 +160,16 @@ function answer(pick) {
   const right = pick === q.correct;
   state.answers.push(pick);
   state.timeSpent += Math.min(q.time, Math.round((Date.now() - shownAt) / 1000));
-  let lost = 0;
+  let lost = 0, won = 0;
   if (right) {
     state.score += q.score;
     state.correct += 1;
     state.wrongStreak = 0;
+    state.rightStreak += 1;
+    won = starBonus(state.rightStreak);
+    state.stars += won;
   } else {
+    state.rightStreak = 0;
     state.wrongStreak += 1;
     lost = Math.min(state.stars, starPenalty(state.wrongStreak, state.stars));
     state.stars -= lost;
@@ -167,7 +180,7 @@ function answer(pick) {
   opts[q.correct].classList.add("correct");
   if (pick >= 0 && !right) opts[pick].classList.add("wrong");
   const fb = $("qpFeedback");
-  fb.textContent = right ? `${t("correctWord", "Correct!")} +${q.score}`
+  fb.textContent = right ? `${t("correctWord", "Correct!")} +${q.score}${won ? `  +${won} ★` : ""}`
     : `${pick < 0 ? t("timeUp", "Time's up!") : t("wrongWord", "Wrong")}  −${lost} ★`;
   fb.className = "qp-feedback " + (right ? "ok" : "bad");
   renderTop();
@@ -219,6 +232,7 @@ function showNoStars() {
     stopWatch(); stopWatch = null;
     state.stars = r.stars;
     state.wrongStreak = 0;
+    state.rightStreak = 0;
     play();   // same score + answers; fresh timer on the next question
   });
 }
