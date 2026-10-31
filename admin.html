@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Tetragon — Admin</title>
 
   <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
@@ -10,18 +11,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <link rel="stylesheet" href="css/admin.css?v=3" />
 </head>
 <body class="admin-page">
 
   <!-- while we check who you are -->
-  <div class="admin-loading" id="adminLoading">Loading…</div>
+  <div class="admin-gate" id="adminLoading">Loading…</div>
 
   <!-- signed in but not an admin -->
-  <div class="admin-denied" id="adminDenied" hidden>
+  <div class="admin-gate" id="adminDenied" hidden>
     <h1>Not authorized</h1>
     <p>This page is for the site owner only.</p>
     <a class="admin-link" href="index.html">← Back to site</a>
+  </div>
+
+  <!-- admin email, but not verified yet (Firestore rules require a verified email) -->
+  <div class="admin-gate" id="adminVerify" hidden>
+    <h1>Verify your email</h1>
+    <p>For security, the admin panel only opens for a verified email.<br />
+       Signing in with Google verifies it automatically.</p>
+    <button class="admin-btn" id="sendVerifyBtn" type="button">Send verification email</button>
+    <p class="admin-muted" id="verifyMsg"></p>
+    <button class="admin-btn admin-btn--ghost" id="verifyDoneBtn" type="button">I've verified — reload</button>
   </div>
 
   <!-- the dashboard -->
@@ -29,42 +40,159 @@
     <header class="admin-top">
       <div>
         <h1 class="admin-title">Admin dashboard</h1>
-        <p class="admin-sub">Tetragon — live overview</p>
+        <p class="admin-sub">Tetragon · signed in as <span id="adminEmail"></span></p>
       </div>
       <div class="admin-actions">
+        <a class="admin-btn admin-btn--ghost" href="index.html">Site</a>
         <button class="admin-btn" id="refreshBtn" type="button">Refresh</button>
         <button class="admin-btn admin-btn--ghost" id="signoutBtn" type="button">Sign out</button>
       </div>
     </header>
 
+    <div class="admin-error" id="adminError" hidden></div>
+
+    <!-- ===== headline numbers ===== -->
     <section class="stat-grid">
       <div class="stat-card">
-        <div class="stat-label">Visits</div>
-        <div class="stat-value" id="visits">—</div>
-        <div class="stat-note">total browsing sessions</div>
+        <div class="stat-label"><span class="live-dot"></span>Online now</div>
+        <div class="stat-value" id="kOnline">—</div>
+        <div class="stat-note"><span id="kActive24">—</span> active in last 24h · <span id="kActive7">—</span> in 7 days</div>
       </div>
-
       <div class="stat-card">
-        <div class="stat-label">Active users</div>
-        <div class="stat-value" id="active">—</div>
-        <div class="stat-note">seen in the last 5 min</div>
+        <div class="stat-label">Registered users</div>
+        <div class="stat-value" id="kTotal">—</div>
+        <div class="stat-note">+<span id="kNewToday">0</span> today · +<span id="kNew7">0</span> this week · +<span id="kNew30">0</span> in 30 days</div>
       </div>
-
       <div class="stat-card">
-        <div class="stat-label">Total users</div>
-        <div class="stat-value" id="total">—</div>
-        <div class="stat-note">registered accounts</div>
+        <div class="stat-label">Paid users</div>
+        <div class="stat-value" id="kPaid">—</div>
+        <div class="stat-note"><span id="kConv">0%</span> of users · <span id="kExpired">0</span> expired · <span id="kExpiring">0</span> expire in 7 days</div>
       </div>
-
-      <div class="stat-card stat-card--money">
+      <div class="stat-card">
         <div class="stat-label">Revenue</div>
-        <div class="stat-value" id="revenue">—</div>
-        <div class="stat-note"><span id="subs">0</span> active subscriptions</div>
+        <div class="stat-value" id="kRevenue">—</div>
+        <div class="stat-note"><span id="kRevMonth">0</span> this month · <span id="kPayCount">0</span> payments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visits</div>
+        <div class="stat-value" id="kVisitsToday">—</div>
+        <div class="stat-note">today · <span id="kVisits30">0</span> in 30 days · <span id="kVisitsAll">0</span> all time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Roles</div>
+        <div class="stat-value stat-value--sm"><span id="kTeachers">—</span> teachers</div>
+        <div class="stat-note"><span id="kStudents">—</span> students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Plans</div>
+        <div class="stat-value stat-value--sm" id="kPlans">—</div>
+        <div class="stat-note">active subscribers per plan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Content</div>
+        <div class="stat-value stat-value--sm"><span id="kGroups">—</span> groups</div>
+        <div class="stat-note"><span id="kLessons">—</span> lessons created</div>
+      </div>
+    </section>
+
+    <!-- ===== charts ===== -->
+    <section class="chart-grid">
+      <figure class="chart-card">
+        <figcaption><b>New registrations</b> <span class="admin-muted">last 30 days</span></figcaption>
+        <div class="chart" id="chartSignups"></div>
+      </figure>
+      <figure class="chart-card">
+        <figcaption><b>Visits</b> <span class="admin-muted">last 30 days</span></figcaption>
+        <div class="chart" id="chartVisits"></div>
+      </figure>
+      <figure class="chart-card">
+        <figcaption><b>Revenue (so'm)</b> <span class="admin-muted">last 30 days</span></figcaption>
+        <div class="chart" id="chartRevenue"></div>
+      </figure>
+    </section>
+
+    <!-- ===== tables ===== -->
+    <section class="panel">
+      <nav class="tabs" role="tablist">
+        <button class="tab is-on" data-tab="users" type="button">Users <span class="tab-n" id="tnUsers">0</span></button>
+        <button class="tab" data-tab="payments" type="button">Payments <span class="tab-n" id="tnPayments">0</span></button>
+        <button class="tab" data-tab="online" type="button">Online now <span class="tab-n" id="tnOnline">0</span></button>
+      </nav>
+
+      <!-- users -->
+      <div class="tab-body" data-body="users">
+        <div class="toolbar">
+          <input class="search" id="userSearch" type="search" placeholder="Search email, name or UID…" />
+          <select class="select" id="userFilter">
+            <option value="all">All users</option>
+            <option value="paid">Paid (active)</option>
+            <option value="free">Free</option>
+            <option value="expired">Expired</option>
+            <option value="expiring">Expiring in 7 days</option>
+            <option value="online">Online now</option>
+            <option value="teacher">Teachers</option>
+            <option value="student">Students</option>
+            <option value="new7">Registered this week</option>
+          </select>
+          <button class="admin-btn admin-btn--ghost" id="exportUsers" type="button">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="usersTable">
+            <thead>
+              <tr>
+                <th data-sort="email">User</th>
+                <th data-sort="role">Role</th>
+                <th data-sort="status">Plan</th>
+                <th data-sort="createdAt" class="is-sorted desc">Registered</th>
+                <th data-sort="lastSeen">Last active</th>
+                <th data-sort="paidAt">Paid on</th>
+                <th data-sort="planExpires">Expires</th>
+                <th data-sort="totalPaid" class="num">Total paid</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="admin-muted table-foot" id="usersFoot"></p>
+      </div>
+
+      <!-- payments -->
+      <div class="tab-body" data-body="payments" hidden>
+        <div class="toolbar">
+          <select class="select" id="payFilter">
+            <option value="paid">Successful</option>
+            <option value="all">All attempts</option>
+            <option value="prepared">Started, not finished</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="admin-btn admin-btn--ghost" id="exportPayments" type="button">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="payTable">
+            <thead>
+              <tr><th>Date</th><th>User</th><th>Product</th><th class="num">Amount</th><th>Status</th><th>Click ID</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- online -->
+      <div class="tab-body" data-body="online" hidden>
+        <div class="table-wrap">
+          <table class="table" id="onlineTable">
+            <thead><tr><th>User</th><th>Role</th><th>Plan</th><th>Page</th><th>Last seen</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="admin-muted table-foot">Updates live. "Online" = had the site open in the last 5 minutes.</p>
       </div>
     </section>
 
     <p class="admin-updated">Updated: <span id="updated">—</span></p>
   </main>
+
+  <div class="tip" id="tip" hidden></div>
 
   <script type="module" src="js/admin.js"></script>
 </body>

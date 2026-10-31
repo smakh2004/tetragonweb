@@ -11,6 +11,7 @@ import {
   setPersistence, browserLocalPersistence,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { firebaseConfig } from "./firebase-config.js";
+import { isAdminEmail } from "./admin-config.js";
 
 const app  = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -79,6 +80,7 @@ function buildMenu(user) {
             stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
      </button>
      <div class="user-dropdown" id="userDropdown">
+       ${isAdminEmail(user.email) ? `<a href="admin.html" id="adminBtn">Admin panel</a>` : ""}
        <a href="account.html" id="manageBtn" data-i18n="manageAccount">Manage Account</a>
        <button type="button" id="signoutBtn" data-i18n="signOut">Sign Out</button>
      </div>`;
