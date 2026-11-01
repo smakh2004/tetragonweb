@@ -4,7 +4,7 @@
    (The page check is only cosmetic — the Firestore rules are
    what actually stop anyone else from reading the data.)
 ===================================================== */
-export const ADMIN_EMAILS = ["tursunmukhammad2302@gmail.com"];
+export const ADMIN_EMAILS = ["tursunmukhammad2302@gmail.com", "smakh04@list.ru"];
 
 export function isAdminEmail(email) {
   return !!email && ADMIN_EMAILS.includes(String(email).toLowerCase());
